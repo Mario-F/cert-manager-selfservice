@@ -9,7 +9,7 @@ jobs:
       matrix:
         go:
           - '1.17'
-    name: Go ${{ matrix.go }} sample
+    name: Go ${{ matrix.go }}
     steps:
       - uses: actions/checkout@v2
       - name: Setup go
