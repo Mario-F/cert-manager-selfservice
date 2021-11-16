@@ -16,5 +16,6 @@ dist/
 bin/
 
 # Custom
+temp
 .vscode/*
 !.vscode/launch.json
