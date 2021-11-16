@@ -1,0 +1,44 @@
+before:
+  hooks:
+    - go mod download
+builds:
+- env:
+    - CGO_ENABLED=0
+  goos:
+  - freebsd
+  - linux
+  - windows
+  - darwin
+  goarch:
+  - 386
+  - amd64
+  - arm
+  - arm64
+  goarm:
+  - 6
+  - 7
+archives:
+  - replacements:
+      darwin: Darwin
+      linux: Linux
+      windows: Windows
+      386: i386
+      amd64: x86_64
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - LICENSE
+      - README.md
+dockers:
+  - image_templates:
+    - "Mario-F/cert-manager-selfservice:{{ .Tag }}"
+    - "Mario-F/cert-manager-selfservice:v{{ .Major }}"
+    - "Mario-F/cert-manager-selfservice:v{{ .Major }}.{{ .Minor }}"
+    - "Mario-F/cert-manager-selfservice:latest"
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  use: github-native
