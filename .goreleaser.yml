@@ -32,10 +32,10 @@ archives:
       - README.md
 dockers:
   - image_templates:
-    - "Mario-F/cert-manager-selfservice:{{ .Tag }}"
-    - "Mario-F/cert-manager-selfservice:v{{ .Major }}"
-    - "Mario-F/cert-manager-selfservice:v{{ .Major }}.{{ .Minor }}"
-    - "Mario-F/cert-manager-selfservice:latest"
+    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:{{ .Tag }}"
+    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:v{{ .Major }}"
+    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:v{{ .Major }}.{{ .Minor }}"
+    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:latest"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
