@@ -30,12 +30,6 @@ archives:
     files:
       - LICENSE
       - README.md
-dockers:
-  - image_templates:
-    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:{{ .Tag }}"
-    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:v{{ .Major }}"
-    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:v{{ .Major }}.{{ .Minor }}"
-    - "{{ .Env.REGISTRY }}/cert-manager-selfservice:latest"
 checksum:
   name_template: 'checksums.txt'
 snapshot:
