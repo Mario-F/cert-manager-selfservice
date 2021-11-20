@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/Mario-F/cert-manager-selfservice/internal/logger"
 	"github.com/spf13/cobra"
 
 	"github.com/spf13/viper"
@@ -60,6 +61,8 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
+	rootCmd.PersistentFlags().BoolVar(&logger.DebugMode, "debug", false, "output debug log messages")
+	rootCmd.PersistentFlags().BoolVar(&logger.VerboseMode, "verbose", false, "output verbose log messages")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cert-manager-selfservice.yaml)")
 
 	// Cobra also supports local flags, which will only run
