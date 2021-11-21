@@ -1,6 +1,6 @@
 SOURCE_FILES?=./...
 TEST_PATTERN?=.
-TEST_OPTIONS?=
+TEST_OPTIONS?=-v
 
 # Run all the tests
 test:
