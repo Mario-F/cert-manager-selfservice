@@ -29,10 +29,10 @@ func SelfSignedCert() error {
 	return nil
 }
 
-func getCA() (CaCert, error) {
+func getCA() (*CaCert, error) {
 	if ca.created {
 		logger.Debugf("CA is already created, return existing")
-		return ca, nil
+		return &ca, nil
 	}
 	logger.Debugf("CA not created, generating CA-Cert")
 	caCertData := &x509.Certificate{
@@ -54,18 +54,18 @@ func getCA() (CaCert, error) {
 	}
 	caPrivKey, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
-		return ca, err
+		return &ca, err
 	}
 	caBytes, err := x509.CreateCertificate(rand.Reader, caCertData, caCertData, &caPrivKey.PublicKey, caPrivKey)
 	if err != nil {
-		return ca, err
+		return &ca, err
 	}
 	err = pem.Encode(&ca.caCertPEM, &pem.Block{
 		Type:  "CERTIFICATE",
 		Bytes: caBytes,
 	})
 	if err != nil {
-		return ca, err
+		return &ca, err
 	}
 
 	err = pem.Encode(&ca.caCertPrivPEM, &pem.Block{
@@ -73,9 +73,9 @@ func getCA() (CaCert, error) {
 		Bytes: x509.MarshalPKCS1PrivateKey(caPrivKey),
 	})
 	if err != nil {
-		return ca, err
+		return &ca, err
 	}
 
 	ca.created = true
-	return ca, nil
+	return &ca, nil
 }
