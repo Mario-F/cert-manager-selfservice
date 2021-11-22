@@ -29,3 +29,15 @@ func TestCaCreation(t *testing.T) {
 		}
 	})
 }
+
+func TestSelfSignedCreating(t *testing.T) {
+	t.Run("Test getting self signed cert", func(t *testing.T) {
+		cert, err := SelfSignedCert(SelfSignedCertRequest{
+			domain: "test.example.com",
+		})
+		if err != nil {
+			t.Error(err)
+			t.Errorf("Cert is: %v+", cert)
+		}
+	})
+}
