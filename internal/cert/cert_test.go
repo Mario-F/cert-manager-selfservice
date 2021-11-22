@@ -10,7 +10,7 @@ func TestCaCreation(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if !caCert.created {
+		if !caCert.Created {
 			t.Errorf("CaCert is empty")
 		}
 		caCertRes = caCert
@@ -21,7 +21,7 @@ func TestCaCreation(t *testing.T) {
 		if err != nil {
 			t.Error(err)
 		}
-		if !caCert.created {
+		if !caCert.Created {
 			t.Errorf("CaCert is empty")
 		}
 		if caCertRes != caCert {
@@ -33,7 +33,7 @@ func TestCaCreation(t *testing.T) {
 func TestSelfSignedCreating(t *testing.T) {
 	t.Run("Test getting self signed cert", func(t *testing.T) {
 		cert, err := SelfSignedCert(SelfSignedCertRequest{
-			domain: "test.example.com",
+			Domain: "test.example.com",
 		})
 		if err != nil {
 			t.Error(err)

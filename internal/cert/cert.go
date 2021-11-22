@@ -15,15 +15,15 @@ import (
 )
 
 type CaCert struct {
-	cert          *x509.Certificate
-	caCertPEM     bytes.Buffer
-	caCertPrivPEM bytes.Buffer
-	caPrivKey     *rsa.PrivateKey
-	created       bool
+	Cert    *x509.Certificate
+	PEM     bytes.Buffer
+	PrivPEM bytes.Buffer
+	PrivKey *rsa.PrivateKey
+	Created bool
 }
 
 type SelfSignedCertRequest struct {
-	domain string
+	Domain string
 }
 
 type SelfSignedCertResult struct {
@@ -49,7 +49,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 			StreetAddress: []string{""},
 			PostalCode:    []string{"99999"},
 		},
-		DNSNames:     []string{req.domain},
+		DNSNames:     []string{req.Domain},
 		NotBefore:    time.Now(),
 		NotAfter:     time.Now().AddDate(10, 0, 0),
 		SubjectKeyId: []byte{1, 2, 3, 4, 6},
@@ -60,7 +60,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 	if err != nil {
 		return result, err
 	}
-	certBytes, err := x509.CreateCertificate(rand.Reader, cert, ca.cert, &certPrivKey.PublicKey, ca.caPrivKey)
+	certBytes, err := x509.CreateCertificate(rand.Reader, cert, ca.Cert, &certPrivKey.PublicKey, ca.PrivKey)
 	if err != nil {
 		return result, err
 	}
@@ -90,7 +90,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 	}
 
 	certpool := x509.NewCertPool()
-	certpool.AppendCertsFromPEM(ca.caCertPEM.Bytes())
+	certpool.AppendCertsFromPEM(ca.PEM.Bytes())
 	result.ClientTLSConf = &tls.Config{
 		RootCAs: certpool,
 	}
@@ -100,7 +100,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 
 // getCa return a fresh or already created self signed ca
 func getCA() (*CaCert, error) {
-	if ca.created {
+	if ca.Created {
 		logger.Debugf("CA is already created, return existing")
 		return &ca, nil
 	}
@@ -122,17 +122,17 @@ func getCA() (*CaCert, error) {
 		KeyUsage:              x509.KeyUsageDigitalSignature | x509.KeyUsageCertSign,
 		BasicConstraintsValid: true,
 	}
-	ca.cert = caCertData
+	ca.Cert = caCertData
 	caPrivKey, err := rsa.GenerateKey(rand.Reader, 4096)
 	if err != nil {
 		return &ca, err
 	}
-	ca.caPrivKey = caPrivKey
+	ca.PrivKey = caPrivKey
 	caBytes, err := x509.CreateCertificate(rand.Reader, caCertData, caCertData, &caPrivKey.PublicKey, caPrivKey)
 	if err != nil {
 		return &ca, err
 	}
-	err = pem.Encode(&ca.caCertPEM, &pem.Block{
+	err = pem.Encode(&ca.PEM, &pem.Block{
 		Type:  "CERTIFICATE",
 		Bytes: caBytes,
 	})
@@ -140,7 +140,7 @@ func getCA() (*CaCert, error) {
 		return &ca, err
 	}
 
-	err = pem.Encode(&ca.caCertPrivPEM, &pem.Block{
+	err = pem.Encode(&ca.PrivPEM, &pem.Block{
 		Type:  "RSA PRIVATE KEY",
 		Bytes: x509.MarshalPKCS1PrivateKey(caPrivKey),
 	})
@@ -148,6 +148,6 @@ func getCA() (*CaCert, error) {
 		return &ca, err
 	}
 
-	ca.created = true
+	ca.Created = true
 	return &ca, nil
 }
