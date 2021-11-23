@@ -28,13 +28,17 @@ type SelfSignedCertRequest struct {
 
 type SelfSignedCertResult struct {
 	ServerTLSConf *tls.Config
+	ServerCert    tls.Certificate
 	ClientTLSConf *tls.Config
+	CertPEM       bytes.Buffer
+	PrivatePEM    bytes.Buffer
 }
 
 var ca CaCert
 
 func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 	ca, err := getCA()
+	logger.Verbosef("Certficate with domain %s was requested", req.Domain)
 	result := SelfSignedCertResult{}
 	if err != nil {
 		return result, err
@@ -72,6 +76,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 	if err != nil {
 		return result, err
 	}
+	result.CertPEM = *certPEM
 	certPrivKeyPEM := new(bytes.Buffer)
 	err = pem.Encode(certPrivKeyPEM, &pem.Block{
 		Type:  "RSA PRIVATE KEY",
@@ -80,10 +85,12 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 	if err != nil {
 		return result, err
 	}
+	result.PrivatePEM = *certPrivKeyPEM
 	serverCert, err := tls.X509KeyPair(certPEM.Bytes(), certPrivKeyPEM.Bytes())
 	if err != nil {
 		return result, err
 	}
+	result.ServerCert = serverCert
 
 	result.ServerTLSConf = &tls.Config{
 		Certificates: []tls.Certificate{serverCert},
@@ -95,6 +102,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 		RootCAs: certpool,
 	}
 
+	logger.Verbosef("Certificate for domain %s finished", req.Domain)
 	return result, nil
 }
 
