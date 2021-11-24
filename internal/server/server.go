@@ -25,12 +25,10 @@ func Start(port int) {
 		fmt.Fprintf(rw, "Hello, %q", html.EscapeString(r.URL.Path))
 	})
 
-	myRouter.HandleFunc("/cert/{domain}", func(rw http.ResponseWriter, r *http.Request) {
+	myRouter.HandleFunc("/cert/{domain}/pem", func(rw http.ResponseWriter, r *http.Request) {
 		logger.Verbosef("cert handler called")
-		//logger.Debugf("Request %v+", r)
 		vars := mux.Vars(r)
 		logger.Debugf("Request %v+", vars)
-		fmt.Fprintf(rw, "Request cert: %s\n", vars["domain"])
 		certRequest := cert.SelfSignedCertRequest{
 			Domain: vars["domain"],
 		}
@@ -38,8 +36,20 @@ func Start(port int) {
 		if err != nil {
 			logger.Errorf("Error: %v+", err)
 		}
-		fmt.Fprintf(rw, "Public: %s\n", &cert.CertPEM)
-		fmt.Fprintf(rw, "Private: %s\n", &cert.PrivatePEM)
+
+		// Output certificate
+		_, err = rw.Write(cert.PrivatePEM.Bytes())
+		if err != nil {
+			logger.Errorf("Error: %v+", err)
+		}
+		_, err = rw.Write(cert.CertPEM.Bytes())
+		if err != nil {
+			logger.Errorf("Error: %v+", err)
+		}
+		_, err = rw.Write(cert.CaCertPEM.Bytes())
+		if err != nil {
+			logger.Errorf("Error: %v+", err)
+		}
 	})
 
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", port), myRouter))
