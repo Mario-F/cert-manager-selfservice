@@ -11,7 +11,7 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/Mario-F/cert-manager-selfservice/internal/logger"
+	log "github.com/sirupsen/logrus"
 )
 
 type CaCert struct {
@@ -39,7 +39,7 @@ var ca CaCert
 
 func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 	ca, err := getCA()
-	logger.Verbosef("Certficate with domain %s was requested", req.Domain)
+	log.Infof("Certficate with domain %s was requested", req.Domain)
 	result := SelfSignedCertResult{}
 	if err != nil {
 		return result, err
@@ -105,17 +105,17 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 		RootCAs: certpool,
 	}
 
-	logger.Verbosef("Certificate for domain %s finished", req.Domain)
+	log.Infof("Certificate for domain %s finished", req.Domain)
 	return result, nil
 }
 
 // getCa return a fresh or already created self signed ca
 func getCA() (*CaCert, error) {
 	if ca.Created {
-		logger.Debugf("CA is already created, return existing")
+		log.Debugf("CA is already created, return existing")
 		return &ca, nil
 	}
-	logger.Debugf("CA not created, generating CA-Cert")
+	log.Debugf("CA not created, generating CA-Cert")
 	caCertData := &x509.Certificate{
 		SerialNumber: big.NewInt(2019),
 		Subject: pkix.Name{

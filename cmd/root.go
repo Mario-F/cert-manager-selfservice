@@ -25,13 +25,17 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Mario-F/cert-manager-selfservice/internal/logger"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
 	"github.com/spf13/viper"
 )
 
-var cfgFile string
+var (
+	cfgFile  string
+	logDebug bool
+	logSilly bool
+)
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -56,18 +60,31 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	cobra.OnInitialize(initLogging)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 
-	rootCmd.PersistentFlags().BoolVar(&logger.DebugMode, "debug", false, "output debug log messages")
-	rootCmd.PersistentFlags().BoolVar(&logger.VerboseMode, "verbose", false, "output verbose log messages")
+	rootCmd.PersistentFlags().BoolVar(&logSilly, "silly", false, "output all possible log messages")
+	rootCmd.PersistentFlags().BoolVar(&logDebug, "debug", false, "output debug log messages")
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.cert-manager-selfservice.yaml)")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+}
+
+// initLogging set up logging with logrus
+func initLogging() {
+	if logDebug {
+		log.Info("Debug loglevel enabled")
+		log.SetLevel(log.DebugLevel)
+	}
+	if logSilly {
+		log.Info("Silly loglevel enabled")
+		log.SetLevel(log.TraceLevel)
+	}
 }
 
 // initConfig reads in config file and ENV variables if set.
