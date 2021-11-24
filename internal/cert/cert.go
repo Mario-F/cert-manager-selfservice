@@ -52,6 +52,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 			Locality:      []string{"Global"},
 			StreetAddress: []string{""},
 			PostalCode:    []string{"99999"},
+			CommonName:    req.Domain,
 		},
 		DNSNames:     []string{req.Domain},
 		NotBefore:    time.Now(),
