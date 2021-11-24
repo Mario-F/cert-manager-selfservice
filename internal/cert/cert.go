@@ -30,6 +30,7 @@ type SelfSignedCertResult struct {
 	ServerTLSConf *tls.Config
 	ServerCert    tls.Certificate
 	ClientTLSConf *tls.Config
+	CaCertPEM     bytes.Buffer
 	CertPEM       bytes.Buffer
 	PrivatePEM    bytes.Buffer
 }
@@ -43,6 +44,7 @@ func SelfSignedCert(req SelfSignedCertRequest) (SelfSignedCertResult, error) {
 	if err != nil {
 		return result, err
 	}
+	result.CaCertPEM = ca.PEM
 	cert := &x509.Certificate{
 		SerialNumber: big.NewInt(1658),
 		Subject: pkix.Name{
