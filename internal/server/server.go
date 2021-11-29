@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/Mario-F/cert-manager-selfservice/internal/cert"
@@ -15,6 +16,8 @@ func Start(port int) {
 	log.Info("Starting webserver...")
 
 	e := echo.New()
+
+	e.Use(middleware.Logger())
 
 	e.GET("/", func(c echo.Context) error {
 		log.Debug("default handler called")
