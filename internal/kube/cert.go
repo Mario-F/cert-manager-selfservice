@@ -61,6 +61,9 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 		},
 		ObjectMeta: v1.ObjectMeta{
 			Name: fmt.Sprintf("cert-%s", domainSlug),
+			Labels: map[string]string{
+				"cert-manager-selfservice/managed": "true",
+			},
 		},
 		Spec: certv1.CertificateSpec{
 			CommonName: domain,
