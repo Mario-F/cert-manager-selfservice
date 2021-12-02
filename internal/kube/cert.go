@@ -8,12 +8,19 @@ import (
 	certv1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	log "github.com/sirupsen/logrus"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 type CertifcateResult struct {
 	Domain     string
-	CertsFound []certv1.Certificate
+	CertsFound []KubeCertificate
+}
+
+type KubeCertificate struct {
+	Certificate certv1.Certificate
+	Secret      corev1.Secret
+	Ready       bool
 }
 
 func GetCertificate(domain string) (CertifcateResult, error) {
@@ -25,22 +32,31 @@ func GetCertificate(domain string) (CertifcateResult, error) {
 		return result, err
 	}
 
-	cCerts, err := client.CertManager.CertmanagerV1().Certificates(client.Namespace).List(context.TODO(), v1.ListOptions{})
+	cCerts, err := client.CertManager.CertmanagerV1().Certificates(client.Namespace).List(context.TODO(), metav1.ListOptions{})
 	if err != nil {
 		return result, err
 	}
 
 	// Search for domain in dns names
-	var fCerts []certv1.Certificate
+	var kCerts []KubeCertificate
 	for _, c := range cCerts.Items {
 		for _, d := range c.Spec.DNSNames {
 			if d == domain {
-				fCerts = append(fCerts, c)
+				// Certificate found, now get tls secret
+				kCert := KubeCertificate{Ready: true}
+				secret, err := client.K8s.CoreV1().Secrets(client.Namespace).Get(context.TODO(), c.Spec.SecretName, metav1.GetOptions{})
+				if err != nil {
+					log.Errorf("TLS Secret for domain %s not ready yet: %s", domain, c.Spec.SecretName)
+					kCert.Ready = false
+				}
+				kCert.Certificate = c
+				kCert.Secret = *secret
+				kCerts = append(kCerts, kCert)
 				break
 			}
 		}
 	}
-	result.CertsFound = fCerts
+	result.CertsFound = kCerts
 
 	return result, nil
 }
@@ -55,11 +71,11 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 	}
 
 	crt := &certv1.Certificate{
-		TypeMeta: v1.TypeMeta{
+		TypeMeta: metav1.TypeMeta{
 			Kind:       "Certificate",
 			APIVersion: "cert-manager.io/v1",
 		},
-		ObjectMeta: v1.ObjectMeta{
+		ObjectMeta: metav1.ObjectMeta{
 			Name: fmt.Sprintf("cert-%s", domainSlug),
 			Labels: map[string]string{
 				"cert-manager-selfservice/managed": "true",
@@ -79,7 +95,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 		},
 	}
 
-	c, err := client.CertManager.CertmanagerV1().Certificates(client.Namespace).Create(context.TODO(), crt, v1.CreateOptions{})
+	c, err := client.CertManager.CertmanagerV1().Certificates(client.Namespace).Create(context.TODO(), crt, metav1.CreateOptions{})
 	if err != nil {
 		return err
 	}
