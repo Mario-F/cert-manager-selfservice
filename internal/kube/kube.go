@@ -2,6 +2,7 @@ package kube
 
 import (
 	"path/filepath"
+	"sync"
 
 	discovery "github.com/gkarthiks/k8s-discovery"
 	cmclient "github.com/jetstack/cert-manager/pkg/client/clientset/versioned"
@@ -16,10 +17,24 @@ type KubeClients struct {
 	Version     string
 	K8s         *kubernetes.Clientset
 	CertManager *cmclient.Clientset
+	Created     bool
 }
+
+var (
+	fetchedClients KubeClients
+	fetchLock      sync.Mutex
+)
 
 func getClient(kubeConfigPath string) (KubeClients, error) {
 	log.Debug("Get kube client by trying ClusterConfig")
+	fetchLock.Lock()
+	defer fetchLock.Unlock()
+
+	if fetchedClients.Created {
+		log.Debug("Kube clients already exists")
+		return fetchedClients, nil
+	}
+
 	result := KubeClients{}
 
 	// Try get config from passed filepath
@@ -65,6 +80,9 @@ func getClient(kubeConfigPath string) (KubeClients, error) {
 		return result, err
 	}
 	result.Version = version
+
+	result.Created = true
+	fetchedClients = result
 
 	return result, nil
 }
