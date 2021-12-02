@@ -3,6 +3,7 @@ package kube
 import (
 	"path/filepath"
 
+	discovery "github.com/gkarthiks/k8s-discovery"
 	cmclient "github.com/jetstack/cert-manager/pkg/client/clientset/versioned"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
@@ -11,6 +12,8 @@ import (
 )
 
 type KubeClients struct {
+	Namespace   string
+	Version     string
 	K8s         *kubernetes.Clientset
 	CertManager *cmclient.Clientset
 }
@@ -31,17 +34,37 @@ func getClient(kubeConfigPath string) (KubeClients, error) {
 		return result, err
 	}
 
+	// Get k8s and cert-manager clients
 	clientset, err := kubernetes.NewForConfig(config)
 	if err != nil {
 		return result, err
 	}
 	result.K8s = clientset
-
 	certClientset, err := cmclient.NewForConfig(config)
 	if err != nil {
 		return result, err
 	}
 	result.CertManager = certClientset
+
+	// Add additional information
+	k8s, err := discovery.NewK8s()
+	if err != nil {
+		return result, err
+	}
+	namespace, err := k8s.GetNamespace()
+	if err != nil {
+		return result, err
+	}
+	if namespace == "" {
+		result.Namespace = "default"
+	} else {
+		result.Namespace = namespace
+	}
+	version, err := k8s.GetVersion()
+	if err != nil {
+		return result, err
+	}
+	result.Version = version
 
 	return result, nil
 }
