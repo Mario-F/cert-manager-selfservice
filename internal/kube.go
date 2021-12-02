@@ -28,6 +28,7 @@ func getClient(kubeConfigPath string) (KubeClients, error) {
 	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
 	if err != nil {
 		log.Debugf("ClusterConfig created error %v+", err.Error())
+		return result, err
 	}
 
 	clientset, err := kubernetes.NewForConfig(config)
