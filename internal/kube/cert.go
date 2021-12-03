@@ -56,6 +56,7 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 
 				// Update timestamp on last access label
 				if updateAccess {
+					// TODO: Only update if last-access few seconds back to prevent spamming update api
 					c.ObjectMeta.Labels["cert-manager-selfservice/last-access"] = fmt.Sprintf("%d", time.Now().Unix())
 					_, err := client.CertManager.CertmanagerV1().Certificates(c.Namespace).Update(context.TODO(), &c, metav1.UpdateOptions{})
 					if err != nil {
