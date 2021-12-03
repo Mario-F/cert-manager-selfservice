@@ -11,7 +11,7 @@ func TestKubeCertHandling(t *testing.T) {
 	log.SetLevel(log.DebugLevel)
 	fDomain := "example.com"
 	t.Run("Test get domain", func(t *testing.T) {
-		cert, err := GetCertificate(fDomain)
+		cert, err := GetCertificate(fDomain, true)
 		if err != nil {
 			t.Logf("Test can fail %v+", err)
 			return

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	certv1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
@@ -23,7 +24,7 @@ type KubeCertificate struct {
 	Ready       bool
 }
 
-func GetCertificate(domain string) (CertifcateResult, error) {
+func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) {
 	log.Infof("Search for domain %s certificate", domain)
 	result := CertifcateResult{Domain: domain}
 
@@ -52,6 +53,16 @@ func GetCertificate(domain string) (CertifcateResult, error) {
 				kCert.Certificate = c
 				kCert.Secret = *secret
 				kCerts = append(kCerts, kCert)
+
+				// Update timestamp on last access label
+				if updateAccess {
+					c.ObjectMeta.Labels["cert-manager-selfservice/last-access"] = fmt.Sprintf("%d", time.Now().Unix())
+					_, err := client.CertManager.CertmanagerV1().Certificates(c.Namespace).Update(context.TODO(), &c, metav1.UpdateOptions{})
+					if err != nil {
+						return result, err
+					}
+				}
+
 				break
 			}
 		}
