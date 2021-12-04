@@ -23,17 +23,22 @@ package cmd
 
 import (
 	"github.com/Mario-F/cert-manager-selfservice/internal/server"
+	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
-var serverPort int
+var (
+	serverPort int
+	issuerKind string
+	issuerName string
+)
 
 // serverCmd represents the server command
 var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Start webserver to provide certificates from cert-manager",
 	Run: func(cmd *cobra.Command, args []string) {
-		server.Start(serverPort)
+		server.Start(serverPort, issuerKind, issuerName)
 	},
 }
 
@@ -44,4 +49,10 @@ func init() {
 	// is called directly, e.g.:
 	// serverCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	serverCmd.Flags().IntVar(&serverPort, "port", 8030, "Port for the webserver to use")
+	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
+	serverCmd.Flags().StringVar(&issuerName, "issuer-name", "", "Cert Manager issuer instance to use")
+	err := serverCmd.MarkFlagRequired("issuer-name")
+	if err != nil {
+		log.Error(err)
+	}
 }

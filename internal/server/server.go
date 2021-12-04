@@ -12,8 +12,8 @@ import (
 )
 
 // Start is the entrypoint for starting the webserver
-func Start(port int) {
-	log.Info("Starting webserver...")
+func Start(port int, issuerKind string, issuerName string) {
+	log.Infof("Starting webserver with IssuerKind: %s and IssuerName: %s", issuerKind, issuerName)
 
 	e := echo.New()
 
