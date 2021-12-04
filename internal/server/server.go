@@ -24,7 +24,7 @@ func Start(port int, issuerKind string, issuerName string) {
 		return c.String(http.StatusOK, "default route")
 	})
 
-	e.GET("/cert/:domain/pem", func(c echo.Context) error {
+	e.GET("/selfcert/:domain/pem", func(c echo.Context) error {
 		log.Infof("cert handler called")
 		domain := c.Param("domain")
 		log.Debugf("Request domain %s", domain)
