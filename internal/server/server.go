@@ -27,7 +27,7 @@ func Start(port int, issuerKind string, issuerName string) {
 	e.GET("/cert/:domain/pem", func(c echo.Context) error {
 		log.Infof("cert handler called")
 		domain := c.Param("domain")
-		log.Debugf("Request doman %s", domain)
+		log.Debugf("Request domain %s", domain)
 
 		certRequest := cert.SelfSignedCertRequest{
 			Domain: domain,
