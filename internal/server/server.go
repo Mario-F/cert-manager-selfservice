@@ -14,7 +14,7 @@ import (
 )
 
 // Start is the entrypoint for starting the webserver
-func Start(port int, issuerKind string, issuerName string) {
+func Start(port int, certPrefix string, issuerKind string, issuerName string) {
 	log.Infof("Starting webserver with IssuerKind: %s and IssuerName: %s", issuerKind, issuerName)
 	issuerRef := cmmeta.ObjectReference{
 		Name: issuerName,
@@ -73,7 +73,7 @@ func Start(port int, issuerKind string, issuerName string) {
 
 		if len(certResult.CertsFound) == 0 {
 			log.Infof("No certs found, creating new cert for domain %s with %s of name %s", domain, issuerKind, issuerName)
-			err := kube.CreateCertificate(domain, issuerRef)
+			err := kube.CreateCertificate(domain, issuerRef, certPrefix)
 			if err != nil {
 				log.Errorf("Error: %v+", err)
 				return http.ErrAbortHandler

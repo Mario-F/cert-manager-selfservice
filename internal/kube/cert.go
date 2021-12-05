@@ -73,7 +73,7 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 	return result, nil
 }
 
-func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
+func CreateCertificate(domain string, issuer cmmeta.ObjectReference, certPrefix string) error {
 	log.Infof("Create certificate for domain %s", domain)
 	domainSlug := strings.ReplaceAll(domain, ".", "-")
 
@@ -88,7 +88,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 			APIVersion: "cert-manager.io/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("cert-%s", domainSlug),
+			Name: fmt.Sprintf("%s-%s", certPrefix, domainSlug),
 			Labels: map[string]string{
 				"cert-manager-selfservice/managed": "true",
 			},

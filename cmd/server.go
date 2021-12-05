@@ -29,6 +29,7 @@ import (
 
 var (
 	serverPort int
+	certPrefix string
 	issuerKind string
 	issuerName string
 )
@@ -38,7 +39,7 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Start webserver to provide certificates from cert-manager",
 	Run: func(cmd *cobra.Command, args []string) {
-		server.Start(serverPort, issuerKind, issuerName)
+		server.Start(serverPort, certPrefix, issuerKind, issuerName)
 	},
 }
 
@@ -49,6 +50,7 @@ func init() {
 	// is called directly, e.g.:
 	// serverCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	serverCmd.Flags().IntVar(&serverPort, "port", 8030, "Port for the webserver to use")
+	serverCmd.Flags().StringVar(&certPrefix, "cert-prefix", "cms", "Prefix to use for certificate resources")
 	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
 	serverCmd.Flags().StringVar(&issuerName, "issuer-name", "", "Cert Manager issuer instance to use")
 	err := serverCmd.MarkFlagRequired("issuer-name")
