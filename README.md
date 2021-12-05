@@ -20,4 +20,4 @@ If the certificate not exists a certificate ressource will automatically be crea
 
 ### Deploy
 
-TODO: A [Helm Chart](https://github.com/Mario-F/helm-charts) is on the way
+* [Helm Chart](https://github.com/Mario-F/helm-charts/tree/main/charts/cert-manager-selfservice)
