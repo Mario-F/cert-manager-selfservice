@@ -8,6 +8,7 @@ import (
 	cmclient "github.com/jetstack/cert-manager/pkg/client/clientset/versioned"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/homedir"
 )
@@ -46,7 +47,11 @@ func getClient(kubeConfigPath string) (KubeClients, error) {
 	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
 	if err != nil {
 		log.Debugf("ClusterConfig created error %v+", err.Error())
-		return result, err
+		// Try inclusterconfig
+		config, err = rest.InClusterConfig()
+		if err != nil {
+			return result, err
+		}
 	}
 
 	// Get k8s and cert-manager clients
