@@ -93,10 +93,10 @@ func Start(port int, certPrefix string, issuerKind string, issuerName string) {
 			return c.NoContent(http.StatusAccepted)
 		}
 
-		// Create pem: https://www.digicert.com/kb/ssl-support/pem-ssl-creation.htm
 		secretData := cert.Secret.Data
 		if len(secretData["tls.key"]) == 0 || len(secretData["tls.crt"]) == 0 {
 			log.Errorf("Not all secret data required found for domain: %s", domain)
+			return echo.NewHTTPError(http.StatusInternalServerError, "There was a problem fetching certificate secret, see server logs for details")
 		}
 		rw := c.Response().Writer
 		_, err = rw.Write(secretData["tls.key"])
