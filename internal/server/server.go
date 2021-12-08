@@ -61,8 +61,9 @@ func Start(port int, certPrefix string, issuerKind string, issuerName string) {
 		return nil
 	})
 
-	e.GET("/cert/:domain/pem", func(c echo.Context) error {
+	e.GET("/cert/:domain/:crttype", func(c echo.Context) error {
 		domain := c.Param("domain")
+		crttype := c.Param("crttype")
 		log.Infof("Certservice called with domain: %s", domain)
 
 		certResult, err := kube.GetCertificate(domain, true)
@@ -98,20 +99,37 @@ func Start(port int, certPrefix string, issuerKind string, issuerName string) {
 			log.Errorf("Not all secret data required found for domain: %s", domain)
 			return echo.NewHTTPError(http.StatusInternalServerError, "There was a problem fetching certificate secret, see server logs for details")
 		}
+
 		rw := c.Response().Writer
-		_, err = rw.Write(secretData["tls.key"])
-		if err != nil {
-			log.Errorf("Error: %v+", err)
-		}
-		_, err = rw.Write(secretData["tls.crt"])
-		if err != nil {
-			log.Errorf("Error: %v+", err)
-		}
-		if len(secretData["ca.crt"]) > 0 {
-			_, err = rw.Write(secretData["ca.crt"])
+		outputKey := func() {
+			_, err = rw.Write(secretData["tls.key"])
 			if err != nil {
 				log.Errorf("Error: %v+", err)
 			}
+		}
+		outputCrt := func() {
+			_, err = rw.Write(secretData["tls.crt"])
+			if err != nil {
+				log.Errorf("Error: %v+", err)
+			}
+		}
+		outputCa := func() {
+			if len(secretData["ca.crt"]) > 0 {
+				_, err = rw.Write(secretData["ca.crt"])
+				if err != nil {
+					log.Errorf("Error: %v+", err)
+				}
+			}
+		}
+
+		if crttype == "pem" || crttype == "key" {
+			outputKey()
+		}
+		if crttype == "pem" || crttype == "crt" {
+			outputCrt()
+		}
+		if crttype == "pem" || crttype == "ca" {
+			outputCa()
 		}
 
 		return nil
