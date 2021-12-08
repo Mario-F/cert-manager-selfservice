@@ -7,3 +7,4 @@
 * Create prometheus endpoint
 * Implement profiles matching domains for different configurations
 * Create a client handling certificate requests as service or cronbased
+* Use 304 Not Modified (test with wget)
