@@ -24,7 +24,13 @@ type KubeClients struct {
 var (
 	fetchedClients KubeClients
 	fetchLock      sync.Mutex
+	kubeNamespace  string
 )
+
+func SetNamespace(kubens string) {
+	log.Infof("Setting kubernetes namespace to %s", kubens)
+	kubeNamespace = kubens
+}
 
 func getClient(kubeConfigPath string) (KubeClients, error) {
 	log.Debug("Get kube client by trying ClusterConfig")
@@ -76,7 +82,7 @@ func getClient(kubeConfigPath string) (KubeClients, error) {
 		return result, err
 	}
 	if namespace == "" {
-		result.Namespace = "default"
+		result.Namespace = kubeNamespace
 	} else {
 		result.Namespace = namespace
 	}

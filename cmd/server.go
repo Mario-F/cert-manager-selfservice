@@ -22,17 +22,19 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
 	"github.com/Mario-F/cert-manager-selfservice/internal/server"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
 var (
-	serverPort  int
-	metricsPort int
-	certPrefix  string
-	issuerKind  string
-	issuerName  string
+	serverPort    int
+	metricsPort   int
+	certPrefix    string
+	kubeNamespace string
+	issuerKind    string
+	issuerName    string
 )
 
 // serverCmd represents the server command
@@ -40,6 +42,7 @@ var serverCmd = &cobra.Command{
 	Use:   "server",
 	Short: "Start webserver to provide certificates from cert-manager",
 	Run: func(cmd *cobra.Command, args []string) {
+		kube.SetNamespace(kubeNamespace)
 		go server.StartMetricsExporter(metricsPort)
 		server.Start(serverPort, certPrefix, issuerKind, issuerName)
 	},
@@ -54,6 +57,7 @@ func init() {
 	serverCmd.Flags().IntVar(&serverPort, "port", 8030, "Port for the webserver to use")
 	serverCmd.Flags().IntVar(&metricsPort, "metrics-port", 8040, "Port for exporting prometheus metrics")
 	serverCmd.Flags().StringVar(&certPrefix, "cert-prefix", "cms", "Prefix to use for certificate resources")
+	serverCmd.Flags().StringVar(&kubeNamespace, "kube-namespace", "default", "Kubernetes namespace to use")
 	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
 	serverCmd.Flags().StringVar(&issuerName, "issuer-name", "", "Cert Manager issuer instance to use")
 	err := serverCmd.MarkFlagRequired("issuer-name")
