@@ -26,8 +26,8 @@ func TestKubeClientConfig(t *testing.T) {
 			return
 		}
 		pods, _ := client.K8s.CoreV1().Pods("").List(context.TODO(), v1.ListOptions{})
-		t.Logf("%v+", pods)
+		t.Logf("Got %d pods", len(pods.Items))
 		certs, _ := client.CertManager.CertmanagerV1().Certificates("unraid").List(context.TODO(), v1.ListOptions{})
-		t.Logf("%v+", certs)
+		t.Logf("Got %d certs", len(certs.Items))
 	})
 }
