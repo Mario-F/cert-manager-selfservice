@@ -9,8 +9,13 @@ import (
 )
 
 func StartMetricsExporter(port int) {
-	http.Handle("/metrics", promhttp.Handler())
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), nil)
+	endpointServer := fmt.Sprintf(":%d", port)
+	endpointHandler := "/metrics"
+
+	log.Infof("Starting metrics exporter on %s/%s", endpointServer, endpointHandler)
+
+	http.Handle(endpointHandler, promhttp.Handler())
+	err := http.ListenAndServe(endpointServer, nil)
 	if err != nil {
 		log.Error("Failed to start metrics exporter endpoint")
 	}
