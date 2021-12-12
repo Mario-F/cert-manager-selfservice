@@ -3,6 +3,7 @@ package kube
 import (
 	"context"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,6 +22,7 @@ type CertifcateResult struct {
 type KubeCertificate struct {
 	Certificate certv1.Certificate
 	Secret      corev1.Secret
+	LastAccess  time.Time
 	Ready       bool
 }
 
@@ -63,6 +65,14 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 						return result, err
 					}
 				}
+
+				// Added lastAccess
+				iTimestamp, err := strconv.ParseInt(c.ObjectMeta.Labels["cert-manager-selfservice/last-access"], 10, 64)
+				log.Debugf("Last access timestamp for domain %s is %d", domain, iTimestamp)
+				if err != nil {
+					log.Errorf("Failed to parse lastAccess for cert with domain %s", domain)
+				}
+				kCert.LastAccess = time.Unix(iTimestamp, 0)
 
 				break
 			}
