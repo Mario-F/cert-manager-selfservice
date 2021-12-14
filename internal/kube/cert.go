@@ -22,7 +22,7 @@ type CertifcateResult struct {
 type KubeCertificate struct {
 	Certificate certv1.Certificate
 	Secret      corev1.Secret
-	LastAccess  time.Time
+	LastAccess  int64
 	Ready       bool
 }
 
@@ -72,7 +72,7 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 				if err != nil {
 					log.Errorf("Failed to parse lastAccess for cert with domain %s", domain)
 				}
-				kCert.LastAccess = time.Unix(iTimestamp, 0)
+				kCert.LastAccess = iTimestamp
 
 				break
 			}
