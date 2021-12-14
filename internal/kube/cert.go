@@ -58,21 +58,21 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 
 				// Update timestamp on last access label
 				if updateAccess {
-					// TODO: Only update if last-access few seconds back to prevent spamming update api
-					c.ObjectMeta.Labels["cert-manager-selfservice/last-access"] = fmt.Sprintf("%d", time.Now().Unix())
-					_, err := client.CertManager.CertmanagerV1().Certificates(c.Namespace).Update(context.TODO(), &c, metav1.UpdateOptions{})
-					if err != nil {
-						return result, err
+					timeNow := time.Now().Unix()
+					timeCert := parseTime(domain, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
+
+					if timeCert < (timeNow - 5) {
+						log.Debugf("Update lastAccess time for domain %s", domain)
+						c.ObjectMeta.Labels["cert-manager-selfservice/last-access"] = fmt.Sprintf("%d", timeNow)
+						_, err := client.CertManager.CertmanagerV1().Certificates(c.Namespace).Update(context.TODO(), &c, metav1.UpdateOptions{})
+						if err != nil {
+							return result, err
+						}
 					}
 				}
 
 				// Added lastAccess
-				iTimestamp, err := strconv.ParseInt(c.ObjectMeta.Labels["cert-manager-selfservice/last-access"], 10, 64)
-				log.Debugf("Last access timestamp for domain %s is %d", domain, iTimestamp)
-				if err != nil {
-					log.Errorf("Failed to parse lastAccess for cert with domain %s", domain)
-				}
-				kCert.LastAccess = iTimestamp
+				kCert.LastAccess = parseTime(domain, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
 
 				break
 			}
@@ -81,6 +81,16 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 	result.CertsFound = kCerts
 
 	return result, nil
+}
+
+func parseTime(domain string, stringTime string) int64 {
+	iTimestamp, err := strconv.ParseInt(stringTime, 10, 64)
+	log.Debugf("Last access timestamp for domain %s is %d", domain, iTimestamp)
+	if err != nil {
+		log.Warnf("Failed to parse lastAccess for cert with domain %s", domain)
+		return 0
+	}
+	return iTimestamp
 }
 
 func CreateCertificate(domain string, issuer cmmeta.ObjectReference, certPrefix string) error {
