@@ -9,6 +9,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type PlainCert struct {
+	Ca  string `json:"ca"`
+	Crt string `json:"crt"`
+	Key string `json:"key"`
+}
+
 func getCertHandler(issuerRef cmmeta.ObjectReference, certPrefix string) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		domain := c.Param("domain")
@@ -79,6 +85,17 @@ func getCertHandler(issuerRef cmmeta.ObjectReference, certPrefix string) echo.Ha
 		}
 		if crttype == "pem" || crttype == "ca" {
 			outputCa()
+		}
+		if crttype == "json" {
+			pCrt := PlainCert{
+				string(secretData["ca.crt"]),
+				string(secretData["tls.crt"]),
+				string(secretData["tls.key"]),
+			}
+			err := c.JSON(200, pCrt)
+			if err != nil {
+				log.Errorf("Error: %v+", err)
+			}
 		}
 
 		return nil
