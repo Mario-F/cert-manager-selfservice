@@ -19,7 +19,7 @@ Then you can request a certificate by calling: `http://localhost:8030/cert/your.
 
 If the certificate not exists a certificate ressource will automatically be created, until there is no valid secret (issued certificate) a HTTP 202 will be returned.
 
-There a also other endpoints like `crt`, `key`, `ca` availiable.
+There a also other endpoints like `crt`, `key`, `ca`, `json` availiable.
 
 ### Deploy
 
