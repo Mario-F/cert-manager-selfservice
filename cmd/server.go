@@ -22,6 +22,7 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"github.com/Mario-F/cert-manager-selfservice/internal/cleaner"
 	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
 	"github.com/Mario-F/cert-manager-selfservice/internal/server"
 	log "github.com/sirupsen/logrus"
@@ -44,6 +45,13 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		kube.SetNamespace(kubeNamespace)
 		go server.StartMetricsExporter(metricsPort)
+
+		cleaner := cleaner.Cleaner{}
+		err := cleaner.Run()
+		if err != nil {
+			log.Fatalf("Error on cleanup: %v+", err)
+		}
+
 		server.Start(serverPort, certPrefix, issuerKind, issuerName)
 	},
 }
