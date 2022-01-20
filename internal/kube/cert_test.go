@@ -24,7 +24,7 @@ func TestKubeCertHandling(t *testing.T) {
 			Name: "TestClusterIssuer",
 			Kind: "ClusterIssuer",
 		}
-		err := CreateCertificate(fDomain, testIssuer, "test")
+		err := CreateCertificate(fDomain, testIssuer)
 		if err != nil {
 			t.Logf("Test can fail %v+", err)
 			return
