@@ -121,7 +121,7 @@ func parseTime(domain string, stringTime string) int64 {
 	return iTimestamp
 }
 
-func CreateCertificate(domain string, issuer cmmeta.ObjectReference, certPrefix string) error {
+func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 	log.Infof("Create certificate for domain %s", domain)
 	domainSlug := strings.ReplaceAll(domain, ".", "-")
 
@@ -136,7 +136,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference, certPrefix 
 			APIVersion: "cert-manager.io/v1",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name: fmt.Sprintf("%s-%s", certPrefix, domainSlug),
+			Name: fmt.Sprintf("%s-%s", managerId, domainSlug),
 			Labels: map[string]string{
 				"cert-manager-selfservice/managed": managerId,
 			},

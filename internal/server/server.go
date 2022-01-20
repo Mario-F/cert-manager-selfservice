@@ -11,7 +11,7 @@ import (
 )
 
 // Start is the entrypoint for starting the webserver
-func Start(port int, certPrefix string, issuerKind string, issuerName string) {
+func Start(port int, issuerKind string, issuerName string) {
 	log.Infof("Starting webserver with IssuerKind: %s and IssuerName: %s", issuerKind, issuerName)
 	issuerRef := cmmeta.ObjectReference{
 		Name: issuerName,
@@ -29,7 +29,7 @@ func Start(port int, certPrefix string, issuerKind string, issuerName string) {
 
 	e.GET("/selfcert/:domain/pem", getSelfCertHandler())
 
-	e.GET("/cert/:domain/:crttype", getCertHandler(issuerRef, certPrefix))
+	e.GET("/cert/:domain/:crttype", getCertHandler(issuerRef))
 
 	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", port)))
 }

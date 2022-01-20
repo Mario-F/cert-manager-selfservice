@@ -15,7 +15,7 @@ type PlainCert struct {
 	Key string `json:"key"`
 }
 
-func getCertHandler(issuerRef cmmeta.ObjectReference, certPrefix string) echo.HandlerFunc {
+func getCertHandler(issuerRef cmmeta.ObjectReference) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		domain := c.Param("domain")
 		crttype := c.Param("crttype")
@@ -29,7 +29,7 @@ func getCertHandler(issuerRef cmmeta.ObjectReference, certPrefix string) echo.Ha
 
 		if len(certResult.CertsFound) == 0 {
 			log.Infof("No certs found, creating new cert for domain %s with %s of name %s", domain, issuerRef.Kind, issuerRef.Name)
-			err := kube.CreateCertificate(domain, issuerRef, certPrefix)
+			err := kube.CreateCertificate(domain, issuerRef)
 			if err != nil {
 				log.Errorf("Error: %v+", err)
 				return http.ErrAbortHandler

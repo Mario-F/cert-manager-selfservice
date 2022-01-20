@@ -32,7 +32,6 @@ import (
 var (
 	serverPort    int
 	metricsPort   int
-	certPrefix    string
 	managerId     string
 	kubeNamespace string
 	issuerKind    string
@@ -55,7 +54,7 @@ var serverCmd = &cobra.Command{
 			log.Fatalf("Error on cleanup: %v+", err)
 		}
 
-		server.Start(serverPort, certPrefix, issuerKind, issuerName)
+		server.Start(serverPort, issuerKind, issuerName)
 	},
 }
 
@@ -66,7 +65,6 @@ func init() {
 	// is called directly, e.g.:
 	serverCmd.Flags().IntVar(&serverPort, "port", 8030, "Port for the webserver to use")
 	serverCmd.Flags().IntVar(&metricsPort, "metrics-port", 8040, "Port for exporting prometheus metrics")
-	serverCmd.Flags().StringVar(&certPrefix, "cert-prefix", "cms", "Prefix to use for certificate resources")
 	serverCmd.Flags().StringVar(&managerId, "manager-id", "default", "A uniq id to mark certificates managed by this instance")
 	serverCmd.Flags().StringVar(&kubeNamespace, "kube-namespace", "default", "Kubernetes namespace to use")
 	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
