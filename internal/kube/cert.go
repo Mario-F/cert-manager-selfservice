@@ -12,6 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/labels"
 )
 
 type CertifcateResult struct {
@@ -26,6 +27,33 @@ type KubeCertificate struct {
 	Ready       bool
 }
 
+var managerId string
+
+func SetManagerId(newId string) {
+	managerId = newId
+}
+
+func GetCertificates() (*certv1.CertificateList, error) {
+	log.Debugf("Get all cert-manager-selfservice managed certificates with ID: %s", managerId)
+	result := &certv1.CertificateList{}
+
+	client, err := getClient("")
+	if err != nil {
+		return result, err
+	}
+
+	labelSelector := metav1.LabelSelector{MatchLabels: map[string]string{"cert-manager-selfservice/managed": managerId}}
+	listOptions := metav1.ListOptions{LabelSelector: labels.Set(labelSelector.MatchLabels).String()}
+	result, err = client.CertManager.CertmanagerV1().Certificates(client.Namespace).List(context.TODO(), listOptions)
+	if err != nil {
+		return result, err
+	}
+
+	log.Debugf("Found %d certificates for manager-id %s", len(result.Items), managerId)
+
+	return result, nil
+}
+
 func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) {
 	log.Infof("Search for domain %s certificate", domain)
 	result := CertifcateResult{Domain: domain}
@@ -35,7 +63,7 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 		return result, err
 	}
 
-	cCerts, err := client.CertManager.CertmanagerV1().Certificates(client.Namespace).List(context.TODO(), metav1.ListOptions{})
+	cCerts, err := GetCertificates()
 	if err != nil {
 		return result, err
 	}
@@ -110,7 +138,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference, certPrefix 
 		ObjectMeta: metav1.ObjectMeta{
 			Name: fmt.Sprintf("%s-%s", certPrefix, domainSlug),
 			Labels: map[string]string{
-				"cert-manager-selfservice/managed": "true",
+				"cert-manager-selfservice/managed": managerId,
 			},
 		},
 		Spec: certv1.CertificateSpec{

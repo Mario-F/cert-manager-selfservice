@@ -33,6 +33,7 @@ var (
 	serverPort    int
 	metricsPort   int
 	certPrefix    string
+	managerId     string
 	kubeNamespace string
 	issuerKind    string
 	issuerName    string
@@ -44,6 +45,8 @@ var serverCmd = &cobra.Command{
 	Short: "Start webserver to provide certificates from cert-manager",
 	Run: func(cmd *cobra.Command, args []string) {
 		kube.SetNamespace(kubeNamespace)
+		kube.SetManagerId(managerId)
+
 		go server.StartMetricsExporter(metricsPort)
 
 		cleaner := cleaner.Cleaner{}
@@ -61,10 +64,10 @@ func init() {
 
 	// Cobra supports local flags which will only run when this command
 	// is called directly, e.g.:
-	// serverCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 	serverCmd.Flags().IntVar(&serverPort, "port", 8030, "Port for the webserver to use")
 	serverCmd.Flags().IntVar(&metricsPort, "metrics-port", 8040, "Port for exporting prometheus metrics")
 	serverCmd.Flags().StringVar(&certPrefix, "cert-prefix", "cms", "Prefix to use for certificate resources")
+	serverCmd.Flags().StringVar(&managerId, "manager-id", "default", "A uniq id to mark certificates managed by this instance")
 	serverCmd.Flags().StringVar(&kubeNamespace, "kube-namespace", "default", "Kubernetes namespace to use")
 	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
 	serverCmd.Flags().StringVar(&issuerName, "issuer-name", "", "Cert Manager issuer instance to use")
