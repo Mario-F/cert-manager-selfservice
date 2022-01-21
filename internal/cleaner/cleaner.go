@@ -21,7 +21,7 @@ func (c *Cleaner) Run() error {
 	if err != nil {
 		return err
 	}
-	log.Debugf("Found %d certificates managed by this instance", len(certs.Items))
+	log.Debugf("Found %d certificates managed by this instance", len(certs))
 
 	return nil
 }

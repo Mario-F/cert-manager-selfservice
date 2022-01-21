@@ -22,6 +22,7 @@ type CertifcateResult struct {
 
 type KubeCertificate struct {
 	Certificate certv1.Certificate
+	Domains     []string
 	Secret      corev1.Secret
 	LastAccess  int64
 	Ready       bool
@@ -34,9 +35,9 @@ func SetManagerId(newId string) {
 }
 
 // TODO: Certificates should returned as KubeCertificate
-func GetCertificates() (*certv1.CertificateList, error) {
+func GetCertificates() ([]KubeCertificate, error) {
 	log.Debugf("Get all cert-manager-selfservice managed certificates with ID: %s", managerId)
-	result := &certv1.CertificateList{}
+	result := []KubeCertificate{}
 
 	client, err := getClient("")
 	if err != nil {
@@ -45,24 +46,56 @@ func GetCertificates() (*certv1.CertificateList, error) {
 
 	labelSelector := metav1.LabelSelector{MatchLabels: map[string]string{"cert-manager-selfservice/managed": managerId}}
 	listOptions := metav1.ListOptions{LabelSelector: labels.Set(labelSelector.MatchLabels).String()}
-	result, err = client.CertManager.CertmanagerV1().Certificates(client.Namespace).List(context.TODO(), listOptions)
+	kubeResult, err := client.CertManager.CertmanagerV1().Certificates(client.Namespace).List(context.TODO(), listOptions)
 	if err != nil {
 		return result, err
 	}
 
-	log.Debugf("Found %d certificates for manager-id %s", len(result.Items), managerId)
+	log.Debugf("Found %d certificates for manager-id %s", len(kubeResult.Items), managerId)
+	for _, c := range kubeResult.Items {
+		actCert := KubeCertificate{Ready: true}
+
+		actCert.Domains = append(actCert.Domains, c.Spec.DNSNames...)
+
+		// now get tls secret
+		kCert := KubeCertificate{Ready: true}
+		secret, err := client.K8s.CoreV1().Secrets(client.Namespace).Get(context.TODO(), c.Spec.SecretName, metav1.GetOptions{})
+		if err != nil {
+			log.Errorf("TLS Secret for domain %s not ready yet: %s", c.Name, c.Spec.SecretName)
+			kCert.Ready = false
+		}
+		kCert.Certificate = c
+		kCert.Secret = *secret
+
+		actCert.LastAccess = parseTime(c.Name, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
+
+		result = append(result, actCert)
+	}
 
 	return result, nil
+}
+
+func (k KubeCertificate) updateAccess() error {
+	log.Debugf("Update lastAccess time for %s", k.Certificate.Name)
+
+	client, err := getClient("")
+	if err != nil {
+		return err
+	}
+
+	timeNow := time.Now().Unix()
+	k.Certificate.ObjectMeta.Labels["cert-manager-selfservice/last-access"] = fmt.Sprintf("%d", timeNow)
+	_, err = client.CertManager.CertmanagerV1().Certificates(k.Certificate.Namespace).Update(context.TODO(), &k.Certificate, metav1.UpdateOptions{})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) {
 	log.Infof("Search for domain %s certificate", domain)
 	result := CertifcateResult{Domain: domain}
-
-	client, err := getClient("")
-	if err != nil {
-		return result, err
-	}
 
 	cCerts, err := GetCertificates()
 	if err != nil {
@@ -71,42 +104,22 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 
 	// Search for domain in dns names
 	var kCerts []KubeCertificate
-	for _, c := range cCerts.Items {
-		for _, d := range c.Spec.DNSNames {
+	for _, kc := range cCerts {
+		for _, d := range kc.Domains {
 			if d == domain {
-				// Certificate found, now get tls secret
-				kCert := KubeCertificate{Ready: true}
-				secret, err := client.K8s.CoreV1().Secrets(client.Namespace).Get(context.TODO(), c.Spec.SecretName, metav1.GetOptions{})
-				if err != nil {
-					log.Errorf("TLS Secret for domain %s not ready yet: %s", domain, c.Spec.SecretName)
-					kCert.Ready = false
-				}
-				kCert.Certificate = c
-				kCert.Secret = *secret
-				kCerts = append(kCerts, kCert)
+				kCerts = append(kCerts, kc)
 
-				// Update timestamp on last access label
 				if updateAccess {
-					timeNow := time.Now().Unix()
-					timeCert := parseTime(domain, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
-
-					if timeCert < (timeNow - 5) {
-						log.Debugf("Update lastAccess time for domain %s", domain)
-						c.ObjectMeta.Labels["cert-manager-selfservice/last-access"] = fmt.Sprintf("%d", timeNow)
-						_, err := client.CertManager.CertmanagerV1().Certificates(c.Namespace).Update(context.TODO(), &c, metav1.UpdateOptions{})
-						if err != nil {
-							return result, err
-						}
+					err := kc.updateAccess()
+					if err != nil {
+						return result, err
 					}
 				}
-
-				// Added lastAccess
-				kCert.LastAccess = parseTime(domain, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
-
 				break
 			}
 		}
 	}
+
 	result.CertsFound = kCerts
 
 	return result, nil
