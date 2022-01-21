@@ -33,6 +33,7 @@ func SetManagerId(newId string) {
 	managerId = newId
 }
 
+// TODO: Certificates should returned as KubeCertificate
 func GetCertificates() (*certv1.CertificateList, error) {
 	log.Debugf("Get all cert-manager-selfservice managed certificates with ID: %s", managerId)
 	result := &certv1.CertificateList{}
