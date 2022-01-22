@@ -5,7 +5,18 @@
 
 This project aims to utilize a working cert-manager installation to provide certificates outside kubernetes as easy as possible.
 
+## Overview
+
+What does cert-manager-selfservice (CMS) offer?
+
+* Just make an http call to get your certificate, example: <http://localhost:8030/cert/your.domain.tld/pem>
+* CMS creates certificates ressources automatically
+* CMS keep track when certificates are accessed
+* CMS cleanup certificates not requested in a time
+
 ## Usage
+
+Simply use the [Helm Chart](https://github.com/Mario-F/helm-charts/tree/main/charts/cert-manager-selfservice) to get starting.
 
 ### Testing
 
@@ -20,7 +31,3 @@ Then you can request a certificate by calling: `http://localhost:8030/cert/your.
 If the certificate not exists a certificate ressource will automatically be created, until there is no valid secret (issued certificate) a HTTP 202 will be returned.
 
 There a also other endpoints like `crt`, `key`, `ca`, `json` availiable.
-
-### Deploy
-
-* [Helm Chart](https://github.com/Mario-F/helm-charts/tree/main/charts/cert-manager-selfservice)
