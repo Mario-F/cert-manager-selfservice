@@ -92,6 +92,21 @@ func (k KubeCertificate) updateAccess() error {
 	return nil
 }
 
+func (k KubeCertificate) Delete() error {
+	log.Debugf("Delete certificate %s", k.Certificate.Name)
+
+	client, err := getClient("")
+	if err != nil {
+		return err
+	}
+
+	err = client.CertManager.CertmanagerV1().Certificates(k.Certificate.Namespace).Delete(context.TODO(), k.Certificate.Name, metav1.DeleteOptions{})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) {
 	log.Infof("Search for domain %s certificate", domain)
 	result := CertifcateResult{Domain: domain}

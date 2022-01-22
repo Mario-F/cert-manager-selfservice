@@ -36,6 +36,7 @@ var (
 	kubeNamespace string
 	issuerKind    string
 	issuerName    string
+	cleanupHours  int64
 )
 
 // serverCmd represents the server command
@@ -49,7 +50,7 @@ var serverCmd = &cobra.Command{
 		go server.StartMetricsExporter(metricsPort)
 
 		cleaner := cleaner.Cleaner{}
-		err := cleaner.Run()
+		err := cleaner.Run(cleanupHours)
 		if err != nil {
 			log.Fatalf("Error on cleanup: %v+", err)
 		}
@@ -69,6 +70,7 @@ func init() {
 	serverCmd.Flags().StringVar(&kubeNamespace, "kube-namespace", "default", "Kubernetes namespace to use")
 	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
 	serverCmd.Flags().StringVar(&issuerName, "issuer-name", "", "Cert Manager issuer instance to use")
+	serverCmd.Flags().Int64Var(&cleanupHours, "cleanup-hours", 72, "Cleanup certificates not accessed after hours")
 	err := serverCmd.MarkFlagRequired("issuer-name")
 	if err != nil {
 		log.Error(err)
