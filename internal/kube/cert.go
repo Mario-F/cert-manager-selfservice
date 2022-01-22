@@ -143,6 +143,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 		return err
 	}
 
+	timeNow := time.Now().Unix()
 	crt := &certv1.Certificate{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Certificate",
@@ -151,7 +152,8 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 		ObjectMeta: metav1.ObjectMeta{
 			Name: fmt.Sprintf("%s-%s", managerId, domainSlug),
 			Labels: map[string]string{
-				"cert-manager-selfservice/managed": managerId,
+				"cert-manager-selfservice/managed":     managerId,
+				"cert-manager-selfservice/last-access": fmt.Sprintf("%d", timeNow),
 			},
 		},
 		Spec: certv1.CertificateSpec{
