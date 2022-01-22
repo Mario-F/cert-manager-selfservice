@@ -33,6 +33,7 @@ func SetNamespace(kubens string) {
 }
 
 func getClient(kubeConfigPath string) (KubeClients, error) {
+	// TODO: Add prom metrics (kube api access count)
 	log.Debug("Get kube client by trying ClusterConfig")
 	fetchLock.Lock()
 	defer fetchLock.Unlock()

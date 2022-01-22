@@ -44,6 +44,7 @@ func (c *Cleaner) run() error {
 	c.runningMux.Lock()
 	defer c.runningMux.Unlock()
 
+	// TODO: Add prom metrics (cleaner execute count)
 	log.Infof("Starting cleanup run, delete older than %d hours", c.cleanupHours)
 
 	certs, err := kube.GetCertificates()
@@ -59,7 +60,9 @@ func (c *Cleaner) run() error {
 			err := cert.Delete()
 			if err != nil {
 				log.Errorf("Error deleting certificate %s: %v+", cert.Certificate.Name, err)
+				// TODO: Add prom metrics (certificate delete error)
 			}
+			// TODO: Add prom metrics (certificate expired count)
 		}
 	}
 

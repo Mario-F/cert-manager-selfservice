@@ -50,6 +50,7 @@ func GetCertificates() ([]KubeCertificate, error) {
 		return result, err
 	}
 
+	// TODO: Add prom metrics (managed certificates gauge)
 	log.Debugf("Found %d certificates for manager-id %s", len(kubeResult.Items), managerId)
 	for _, c := range kubeResult.Items {
 		actCert := KubeCertificate{Ready: true}
@@ -61,10 +62,12 @@ func GetCertificates() ([]KubeCertificate, error) {
 		if err != nil {
 			log.Errorf("TLS Secret for domain %s not ready yet: %s", c.Name, c.Spec.SecretName)
 			actCert.Ready = false
+			// TODO: Add prom metrics (cert ready 0/1)
 		}
 		actCert.Certificate = c
 		actCert.Secret = *secret
 
+		// TODO: Add prom metrics (last access time gauge)
 		actCert.LastAccess = parseTime(c.Name, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
 
 		result = append(result, actCert)
@@ -122,6 +125,7 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 			if d == domain {
 				kCerts = append(kCerts, kc)
 
+				// TODO: Add prom metrics (access count)
 				if updateAccess {
 					err := kc.updateAccess()
 					if err != nil {
@@ -189,6 +193,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 		return err
 	}
 	_ = c
+	// TODO: Add prom metrics (create count)
 
 	return nil
 }
