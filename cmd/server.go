@@ -64,7 +64,6 @@ var serverCmd = &cobra.Command{
 		log.Println("Sutting down gracefully.")
 		cleaner.Stop()
 		server.Stop()
-		os.Exit(0)
 	},
 }
 
