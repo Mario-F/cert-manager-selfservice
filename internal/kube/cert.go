@@ -58,14 +58,13 @@ func GetCertificates() ([]KubeCertificate, error) {
 		actCert.Domains = append(actCert.Domains, c.Spec.DNSNames...)
 
 		// now get tls secret
-		kCert := KubeCertificate{Ready: true}
 		secret, err := client.K8s.CoreV1().Secrets(client.Namespace).Get(context.TODO(), c.Spec.SecretName, metav1.GetOptions{})
 		if err != nil {
 			log.Errorf("TLS Secret for domain %s not ready yet: %s", c.Name, c.Spec.SecretName)
-			kCert.Ready = false
+			actCert.Ready = false
 		}
-		kCert.Certificate = c
-		kCert.Secret = *secret
+		actCert.Certificate = c
+		actCert.Secret = *secret
 
 		actCert.LastAccess = parseTime(c.Name, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
 
