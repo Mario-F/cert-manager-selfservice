@@ -22,6 +22,10 @@ THE SOFTWARE.
 package cmd
 
 import (
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/Mario-F/cert-manager-selfservice/internal/cleaner"
 	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
 	"github.com/Mario-F/cert-manager-selfservice/internal/server"
@@ -48,11 +52,19 @@ var serverCmd = &cobra.Command{
 		kube.SetManagerId(managerId)
 
 		go server.StartMetricsExporter(metricsPort)
+		go server.Start(serverPort, issuerKind, issuerName)
 
 		cleaner := cleaner.Cleaner{}
 		cleaner.Start(cleanupHours)
 
-		server.Start(serverPort, issuerKind, issuerName)
+		quit := make(chan os.Signal, 1)
+		signal.Notify(quit, os.Interrupt)
+		signal.Notify(quit, syscall.SIGTERM)
+		<-quit
+		log.Println("Sutting down gracefully.")
+		cleaner.Stop()
+		server.Stop()
+		os.Exit(0)
 	},
 }
 

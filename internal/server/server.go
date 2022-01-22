@@ -1,14 +1,18 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
 )
+
+var e *echo.Echo
 
 // Start is the entrypoint for starting the webserver
 func Start(port int, issuerKind string, issuerName string) {
@@ -18,7 +22,7 @@ func Start(port int, issuerKind string, issuerName string) {
 		Kind: issuerKind,
 	}
 
-	e := echo.New()
+	e = echo.New()
 
 	e.Use(middleware.Logger())
 
@@ -31,5 +35,16 @@ func Start(port int, issuerKind string, issuerName string) {
 
 	e.GET("/cert/:domain/:crttype", getCertHandler(issuerRef))
 
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", port)))
+	if err := e.Start(fmt.Sprintf(":%d", port)); err != nil && err != http.ErrServerClosed {
+		e.Logger.Fatal("shutting down the server")
+	}
+}
+
+func Stop() {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*10)
+	defer cancel()
+	err := e.Shutdown(ctx)
+	if err != nil {
+		log.Errorf("Error occured on echo shutdown %v+", err)
+	}
 }

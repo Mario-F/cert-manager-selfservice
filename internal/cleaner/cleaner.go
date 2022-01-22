@@ -17,6 +17,7 @@ type Cleaner struct {
 func (c *Cleaner) Start(hours int64) {
 	log.Infof("Starting cleaner")
 	c.cleanupHours = hours
+	c.stop = make(chan bool)
 
 	ticker := time.NewTicker(time.Minute * 30)
 	go func() {
