@@ -11,12 +11,37 @@ import (
 type Cleaner struct {
 	runningMux   sync.Mutex
 	cleanupHours int64
+	stop         chan bool
 }
 
-func (c *Cleaner) Run(hours int64) error {
+func (c *Cleaner) Start(hours int64) {
+	log.Infof("Starting cleaner")
+	c.cleanupHours = hours
+
+	ticker := time.NewTicker(time.Minute * 30)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				err := c.run()
+				if err != nil {
+					log.Errorf("Cleanup run error: %v+", err)
+				}
+			case <-c.stop:
+				log.Infof("Stopping cleaner")
+				return
+			}
+		}
+	}()
+}
+
+func (c *Cleaner) Stop() {
+	close(c.stop)
+}
+
+func (c *Cleaner) run() error {
 	c.runningMux.Lock()
 	defer c.runningMux.Unlock()
-	c.cleanupHours = hours
 
 	log.Infof("Starting cleanup run, delete older than %d hours", c.cleanupHours)
 

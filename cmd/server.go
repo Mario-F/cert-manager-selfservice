@@ -50,10 +50,7 @@ var serverCmd = &cobra.Command{
 		go server.StartMetricsExporter(metricsPort)
 
 		cleaner := cleaner.Cleaner{}
-		err := cleaner.Run(cleanupHours)
-		if err != nil {
-			log.Fatalf("Error on cleanup: %v+", err)
-		}
+		cleaner.Start(cleanupHours)
 
 		server.Start(serverPort, issuerKind, issuerName)
 	},
