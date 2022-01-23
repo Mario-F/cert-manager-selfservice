@@ -35,7 +35,7 @@ This will request a certificte for domain `service.test.example.com` from selfse
 
 This is because cert-manager creating certificates asynchronously the commonly used lets-encrypt certificates will normally take more than one minute to populate.
 
-Selfservice will return HTTP Code 204 until the certificate is ready to use and normal Code 200 when its ready, this means you should check your request for HTTP Code 200.
+Selfservice will return HTTP Code 202 until the certificate is ready to use and normal Code 200 when its ready, this means you should check your request for HTTP Code 200.
 
 ## Development
 
