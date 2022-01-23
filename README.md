@@ -37,6 +37,14 @@ This is because cert-manager creating certificates asynchronously the commonly u
 
 Selfservice will return HTTP Code 202 until the certificate is ready to use and normal Code 200 when its ready, this means you should check your request for HTTP Code 200.
 
+This [example script](./examples/get-certificate.sh) can be used to get certificates only when ready, this simple call will put the final certificate under `/etc/ssl/selfservice/service.test.example.com.pem` when ready:
+
+```shell
+get-certificate.sh http://selfservice.example.com service.test.example.com
+```
+
+If you run it in a cronjob the certificate will automatically renewed regullary.
+
 ## Development
 
 ### Testing
