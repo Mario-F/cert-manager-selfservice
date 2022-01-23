@@ -14,9 +14,30 @@ What does cert-manager-selfservice (CMS) offer?
 * CMS keep track when certificates are accessed
 * CMS cleanup certificates not requested in a time
 
+## Install
+
+You need a working [cert-manager](https://cert-manager.io/) installation and issuer for the domains you want to get certificates.
+
+Simply use the [Helm Chart](https://github.com/Mario-F/helm-charts/tree/main/charts/cert-manager-selfservice) to get started.
+
 ## Usage
 
-Simply use the [Helm Chart](https://github.com/Mario-F/helm-charts/tree/main/charts/cert-manager-selfservice) to get starting.
+Expose your selfservice by ingress for example, the following examples assume that the selfservice http is reachable under <http://selfservice.example.com>
+
+Login to the target system that want to use a certificate, create an directory and simply execute the commands:
+
+```shell
+mkdir /etc/ssl/selfservice
+wget -O /etc/ssl/selfservice/service.test.example.com.pem http://selfservice.example.com/cert/service.test.example.com/pem
+```
+
+This will request a certificte for domain `service.test.example.com` from selfservice, at the very first request for this domain the file under `/etc/ssl/selfservice/service.test.example.com.pem` will created empty.
+
+This is because cert-manager creating certificates asynchronously the commonly used lets-encrypt certificates will normally take more than one minute to populate.
+
+Selfservice will return HTTP Code 204 until the certificate is ready to use and normal Code 200 when its ready, this means you should check your request for HTTP Code 200.
+
+## Development
 
 ### Testing
 
