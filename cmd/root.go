@@ -25,6 +25,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/sirupsen/logrus"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 
@@ -69,6 +70,9 @@ func init() {
 
 // initLogging set up logging with logrus
 func initLogging() {
+	logFormat := new(logrus.TextFormatter)
+	logFormat.FullTimestamp = true
+	logrus.SetFormatter(logFormat)
 	if logDebug {
 		log.Info("Debug loglevel enabled")
 		log.SetLevel(log.DebugLevel)
