@@ -31,14 +31,16 @@ type KubeCertificate struct {
 }
 
 var (
-	managerId          string
-	promCertGauge      prometheus.Gauge
-	promCertReadyGauge *prometheus.GaugeVec
+	managerId               string
+	promCertGauge           prometheus.Gauge
+	promCertReadyGauge      *prometheus.GaugeVec
+	promCertLastAccessGauge *prometheus.GaugeVec
 )
 
 func init() {
 	promCertGauge = promauto.NewGauge(prometheus.GaugeOpts{Name: "cms_certificates", Help: "The amount of managed certificates"})
 	promCertReadyGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{Name: "cms_certificate_ready", Help: "Shows ready status of a certificate"}, []string{"domain"})
+	promCertLastAccessGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{Name: "cms_certificate_last_access", Help: "The timestamp of the last time the certificate was requested"}, []string{"domain"})
 }
 
 func SetManagerId(newId string) {
@@ -77,8 +79,8 @@ func GetCertificates() ([]KubeCertificate, error) {
 		actCert.Certificate = c
 		actCert.Secret = *secret
 
-		// TODO: Add prom metrics (last access time gauge)
 		actCert.LastAccess = parseTime(c.Name, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
+		promCertLastAccessGauge.WithLabelValues(actCert.Domains[0]).Set(float64(actCert.LastAccess))
 
 		if actCert.Ready {
 			promCertReadyGauge.WithLabelValues(actCert.Domains[0]).Set(1)
