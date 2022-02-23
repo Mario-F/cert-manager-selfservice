@@ -6,6 +6,8 @@ import (
 
 	discovery "github.com/gkarthiks/k8s-discovery"
 	cmclient "github.com/jetstack/cert-manager/pkg/client/clientset/versioned"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -25,7 +27,12 @@ var (
 	fetchedClients KubeClients
 	fetchLock      sync.Mutex
 	kubeNamespace  string
+	kubeApiAccess  prometheus.Counter
 )
+
+func init() {
+	kubeApiAccess = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_kube_api_access_total", Help: "Count the number of kubernetes api calls"})
+}
 
 func SetNamespace(kubens string) {
 	log.Infof("Setting kubernetes namespace to %s", kubens)
@@ -33,8 +40,9 @@ func SetNamespace(kubens string) {
 }
 
 func getClient(kubeConfigPath string) (KubeClients, error) {
-	// TODO: Add prom metrics (kube api access count)
 	log.Debug("Get kube client by trying ClusterConfig")
+	kubeApiAccess.Inc()
+
 	fetchLock.Lock()
 	defer fetchLock.Unlock()
 
