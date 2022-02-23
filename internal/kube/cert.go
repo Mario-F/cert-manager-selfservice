@@ -9,6 +9,8 @@ import (
 
 	certv1 "github.com/jetstack/cert-manager/pkg/apis/certmanager/v1"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -28,7 +30,14 @@ type KubeCertificate struct {
 	Ready       bool
 }
 
-var managerId string
+var (
+	managerId     string
+	promCertGauge prometheus.Gauge
+)
+
+func init() {
+	promCertGauge = promauto.NewGauge(prometheus.GaugeOpts{Name: "cms_certificates", Help: "The amount of managed certificates"})
+}
 
 func SetManagerId(newId string) {
 	managerId = newId
@@ -50,7 +59,7 @@ func GetCertificates() ([]KubeCertificate, error) {
 		return result, err
 	}
 
-	// TODO: Add prom metrics (managed certificates gauge)
+	promCertGauge.Set(float64(len(kubeResult.Items)))
 	log.Debugf("Found %d certificates for manager-id %s", len(kubeResult.Items), managerId)
 	for _, c := range kubeResult.Items {
 		actCert := KubeCertificate{Ready: true}
