@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	echoPrometheus "github.com/globocom/echo-prometheus"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -23,6 +24,7 @@ func Start(port int, issuerKind string, issuerName string) {
 	}
 
 	e = echo.New()
+	e.Use(echoPrometheus.MetricsMiddleware())
 
 	e.Use(middleware.Logger())
 
