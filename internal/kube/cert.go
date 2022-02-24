@@ -36,6 +36,7 @@ var (
 	promCertReadyGauge      *prometheus.GaugeVec
 	promCertLastAccessGauge *prometheus.GaugeVec
 	promCertAccessCounter   *prometheus.CounterVec
+	promCertCreateCounter   prometheus.Counter
 )
 
 func init() {
@@ -43,6 +44,7 @@ func init() {
 	promCertReadyGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{Name: "cms_certificate_ready", Help: "Shows ready status of a certificate"}, []string{"domain"})
 	promCertLastAccessGauge = promauto.NewGaugeVec(prometheus.GaugeOpts{Name: "cms_certificate_last_access", Help: "The timestamp of the last time the certificate was requested"}, []string{"domain"})
 	promCertAccessCounter = promauto.NewCounterVec(prometheus.CounterOpts{Name: "cms_certificate_access_total", Help: "The total count of this certificate was requested"}, []string{"domain"})
+	promCertCreateCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_certificate_create_total", Help: "Count of certificates created"})
 }
 
 func SetManagerId(newId string) {
@@ -146,7 +148,7 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 				kCerts = append(kCerts, kc)
 
 				if updateAccess {
-          promCertAccessCounter.WithLabelValues(domain).Inc()
+					promCertAccessCounter.WithLabelValues(domain).Inc()
 					err := kc.updateAccess()
 					if err != nil {
 						return result, err
@@ -213,7 +215,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 		return err
 	}
 	_ = c
-	// TODO: Add prom metrics (create count)
+	promCertCreateCounter.Inc()
 
 	return nil
 }
