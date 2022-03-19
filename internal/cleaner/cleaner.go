@@ -5,13 +5,23 @@ import (
 	"time"
 
 	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	promCleanupCalledCounter prometheus.Counter
 )
 
 type Cleaner struct {
 	runningMux   sync.Mutex
 	cleanupHours int64
 	stop         chan bool
+}
+
+func init() {
+	promCleanupCalledCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_cleanup_total", Help: "Count of cleanup routines executed"})
 }
 
 func (c *Cleaner) Start(hours int64) {
@@ -44,7 +54,7 @@ func (c *Cleaner) run() error {
 	c.runningMux.Lock()
 	defer c.runningMux.Unlock()
 
-	// TODO: Add prom metrics (cleaner execute count)
+	promCleanupCalledCounter.Inc()
 	log.Infof("Starting cleanup run, delete older than %d hours", c.cleanupHours)
 
 	certs, err := kube.GetCertificates()
