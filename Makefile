@@ -6,7 +6,7 @@ TEST_OPTIONS?=-v
 test:
 	LC_ALL=C go test $(TEST_OPTIONS) -failfast -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=5m
 
-# Run all the linters
+# Run all the linters, not working with 1.18 because of https://github.com/golangci/golangci-lint/issues/2649
 lint:
 	golangci-lint run ./...
 	misspell -error **/*
