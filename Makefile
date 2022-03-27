@@ -2,6 +2,10 @@ SOURCE_FILES?=./...
 TEST_PATTERN?=.
 TEST_OPTIONS?=-v
 
+# Run generators for automatic code generation
+generate:
+	go generate ./...
+
 # Run all the tests
 test:
 	LC_ALL=C go test $(TEST_OPTIONS) -failfast -race -coverpkg=./... -covermode=atomic -coverprofile=coverage.txt $(SOURCE_FILES) -run $(TEST_PATTERN) -timeout=5m
