@@ -18,3 +18,7 @@ lint:
 # Run gorelease dry
 godry:
 	goreleaser --snapshot --skip-publish --rm-dist
+
+# Run a build process
+build:
+	go build -o ./build/server ./cmd/app/*.go
