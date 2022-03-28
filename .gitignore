@@ -16,6 +16,7 @@ coverage.txt
 # GoReleaser
 dist/
 bin/
+build/
 
 # Custom
 temp
