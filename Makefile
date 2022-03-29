@@ -16,7 +16,7 @@ lint: generate
 	misspell -error **/*
 
 # Run gorelease dry
-godry:
+godry: generate
 	goreleaser --snapshot --skip-publish --rm-dist
 
 # Run a build process
