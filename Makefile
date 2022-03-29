@@ -20,5 +20,5 @@ godry: generate
 	goreleaser --snapshot --skip-publish --rm-dist
 
 # Run a build process
-build:
+build: generate
 	go build -o ./build/server ./cmd/app/*.go
