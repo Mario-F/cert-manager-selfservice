@@ -60,3 +60,20 @@ Then you can request a certificate by calling: `http://localhost:8030/cert/your.
 If the certificate not exists a certificate ressource will automatically be created, until there is no valid secret (issued certificate) a HTTP 202 will be returned.
 
 There a also other endpoints like `crt`, `key`, `ca`, `json` availiable.
+
+### Debugger
+
+There a serveral ways to easy start development and using live debugging provided by [delve](https://github.com/go-delve/delve)
+
+#### VSCode integrated Console
+
+The provided launch.json has a debug task `Launch File` predefined, just hit start and it should run with the args provided in launch.json.
+
+#### VSCode external Terminal
+
+A more advanced way to test in an external Terminal is provided by the `External Debugging` launch config and `./debug` script:
+
+1. Execute debug script with arguments as normal: `./debug server --issuer-name your-issuer-to-use`
+2. Start the `External Debugging` session in vscode
+
+Unfortunately the order is importend because vscode does not try to automatically connect after start.
