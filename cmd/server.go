@@ -41,6 +41,7 @@ var (
 	issuerKind    string
 	issuerName    string
 	cleanupHours  int64
+	noCleanup     bool
 )
 
 // serverCmd represents the server command
@@ -54,10 +55,12 @@ var serverCmd = &cobra.Command{
 		// TODO: check for kubernetes resources and error out with proper error message
 
 		cleaner := cleaner.Cleaner{}
-		err := cleaner.Start(cleanupHours)
-		if err != nil {
-			log.Errorf("Failed to start cleaner: %+v", err)
-			return
+		if !noCleanup {
+			err := cleaner.Start(cleanupHours)
+			if err != nil {
+				log.Errorf("Failed to start cleaner: %+v", err)
+				return
+			}
 		}
 
 		go server.StartMetricsExporter(metricsPort)
@@ -85,6 +88,7 @@ func init() {
 	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
 	serverCmd.Flags().StringVar(&issuerName, "issuer-name", "", "Cert Manager issuer instance to use")
 	serverCmd.Flags().Int64Var(&cleanupHours, "cleanup-hours", 72, "Cleanup certificates not accessed after hours")
+	serverCmd.Flags().BoolVar(&noCleanup, "no-cleanup", false, "Disable cleanup of unused certificates")
 	err := serverCmd.MarkFlagRequired("issuer-name")
 	if err != nil {
 		log.Error(err)
