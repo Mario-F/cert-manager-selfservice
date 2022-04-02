@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Mario-F/cert-manager-selfservice/internal/static"
 	echoPrometheus "github.com/globocom/echo-prometheus"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
@@ -30,7 +31,7 @@ func Start(port int, issuerKind string, issuerName string) {
 
 	e.GET("/", func(c echo.Context) error {
 		log.Debug("default handler called")
-		return c.String(http.StatusOK, "default route")
+		return c.HTML(http.StatusOK, string(static.Get("/default.html")))
 	})
 
 	e.GET("/selfcert/:domain/pem", getSelfCertHandler())
