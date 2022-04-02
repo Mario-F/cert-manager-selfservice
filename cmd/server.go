@@ -51,11 +51,15 @@ var serverCmd = &cobra.Command{
 		kube.SetNamespace(kubeNamespace)
 		kube.SetManagerId(managerId)
 
+		cleaner := cleaner.Cleaner{}
+		err := cleaner.Start(cleanupHours)
+		if err != nil {
+			log.Errorf("Failed to start cleaner: %+v", err)
+			return
+		}
+
 		go server.StartMetricsExporter(metricsPort)
 		go server.Start(serverPort, issuerKind, issuerName)
-
-		cleaner := cleaner.Cleaner{}
-		cleaner.Start(cleanupHours)
 
 		quit := make(chan os.Signal, 1)
 		signal.Notify(quit, os.Interrupt)

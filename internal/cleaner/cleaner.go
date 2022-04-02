@@ -24,8 +24,15 @@ func init() {
 	promCleanupCalledCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_cleanup_total", Help: "Count of cleanup routines executed"})
 }
 
-func (c *Cleaner) Start(hours int64) {
+func (c *Cleaner) Start(hours int64) error {
 	log.Infof("Starting cleaner")
+
+	// exec a initial cleanup to return on error early
+	err := c.run()
+	if err != nil {
+		return err
+	}
+
 	c.cleanupHours = hours
 	c.stop = make(chan bool)
 
@@ -44,6 +51,8 @@ func (c *Cleaner) Start(hours int64) {
 			}
 		}
 	}()
+
+	return nil
 }
 
 func (c *Cleaner) Stop() {
