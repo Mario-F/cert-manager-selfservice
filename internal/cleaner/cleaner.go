@@ -18,6 +18,7 @@ type Cleaner struct {
 	runningMux   sync.Mutex
 	cleanupHours int64
 	stop         chan bool
+	isStarted    bool
 }
 
 func init() {
@@ -35,6 +36,7 @@ func (c *Cleaner) Start(hours int64) error {
 
 	c.cleanupHours = hours
 	c.stop = make(chan bool)
+	c.isStarted = true
 
 	ticker := time.NewTicker(time.Minute * 30)
 	go func() {
@@ -56,7 +58,9 @@ func (c *Cleaner) Start(hours int64) error {
 }
 
 func (c *Cleaner) Stop() {
-	close(c.stop)
+	if c.isStarted {
+		close(c.stop)
+	}
 }
 
 func (c *Cleaner) run() error {
