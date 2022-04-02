@@ -38,6 +38,7 @@ func (c *Cleaner) Start(hours int64) error {
 	c.stop = make(chan bool)
 	c.isStarted = true
 
+	// TODO: Add configurable interval in go time format
 	ticker := time.NewTicker(time.Minute * 30)
 	go func() {
 		for {
