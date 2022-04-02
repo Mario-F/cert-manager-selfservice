@@ -27,6 +27,7 @@ func init() {
 
 func (c *Cleaner) Start(hours int64) error {
 	log.Infof("Starting cleaner")
+	c.cleanupHours = hours
 
 	// exec a initial cleanup to return on error early
 	err := c.run()
@@ -34,7 +35,6 @@ func (c *Cleaner) Start(hours int64) error {
 		return err
 	}
 
-	c.cleanupHours = hours
 	c.stop = make(chan bool)
 	c.isStarted = true
 

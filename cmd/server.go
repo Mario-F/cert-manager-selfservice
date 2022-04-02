@@ -54,7 +54,7 @@ var serverCmd = &cobra.Command{
 
 		// TODO: check for kubernetes resources and error out with proper error message
 
-		cleaner := cleaner.Cleaner{}
+		cleaner := &cleaner.Cleaner{}
 		if !noCleanup {
 			err := cleaner.Start(cleanupHours)
 			if err != nil {
