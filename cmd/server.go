@@ -51,6 +51,8 @@ var serverCmd = &cobra.Command{
 		kube.SetNamespace(kubeNamespace)
 		kube.SetManagerId(managerId)
 
+		// TODO: check for kubernetes resources and error out with proper error message
+
 		cleaner := cleaner.Cleaner{}
 		err := cleaner.Start(cleanupHours)
 		if err != nil {
