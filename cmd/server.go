@@ -52,7 +52,11 @@ var serverCmd = &cobra.Command{
 		kube.SetNamespace(kubeNamespace)
 		kube.SetManagerId(managerId)
 
-		// TODO: check for kubernetes resources and error out with proper error message
+		err := kube.CheckKubernetes()
+		if err != nil {
+			log.Errorf("Kubernetes not available: %s", err)
+			return
+		}
 
 		cleaner := &cleaner.Cleaner{}
 		if !noCleanup {

@@ -106,3 +106,8 @@ func getClient(kubeConfigPath string) (KubeClients, error) {
 
 	return result, nil
 }
+
+func CheckKubernetes() error {
+	_, err := getClient("")
+	return err
+}
