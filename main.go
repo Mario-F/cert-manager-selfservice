@@ -28,7 +28,7 @@ import (
 	"github.com/Mario-F/cert-manager-selfservice/internal/server"
 )
 
-//go:embed static
+//go:embed web/dist
 var embededStatic embed.FS
 
 func main() {

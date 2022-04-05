@@ -33,7 +33,7 @@ func Start(port int, issuerKind string, issuerName string) {
 
 	e.Use(middleware.Logger())
 
-	staticRoot, err := fs.Sub(EmbededStatic, "static")
+	staticRoot, err := fs.Sub(EmbededStatic, "web/dist")
 	if err != nil {
 		e.Logger.Fatal("Error as descent in static subdirectory", err)
 	}
