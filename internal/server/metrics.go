@@ -12,7 +12,7 @@ func StartMetricsExporter(port int) {
 	endpointServer := fmt.Sprintf(":%d", port)
 	endpointHandler := "/metrics"
 
-	log.Infof("Starting metrics exporter on %s/%s", endpointServer, endpointHandler)
+	log.Infof("Starting metrics exporter on %s%s", endpointServer, endpointHandler)
 
 	http.Handle(endpointHandler, promhttp.Handler())
 	err := http.ListenAndServe(endpointServer, nil)
