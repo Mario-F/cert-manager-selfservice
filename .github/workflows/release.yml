@@ -14,6 +14,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - run: cd web && yarn
+      - run: cd web && yarn build
+
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
