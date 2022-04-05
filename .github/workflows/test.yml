@@ -7,6 +7,9 @@ jobs:
     runs-on: ubuntu-20.04
     strategy:
       matrix:
+        node:
+          - '16'
+          - '17'
         go:
           - '1.17'
           - '1.18'
@@ -17,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: ${{ matrix.node }}
       - run: cd web && yarn
       - run: cd web && yarn test:unit
       - run: cd web && yarn test:e2e:ci
