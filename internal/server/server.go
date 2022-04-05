@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"fmt"
+	"io/fs"
 	"net/http"
 	"time"
 
@@ -32,8 +33,12 @@ func Start(port int, issuerKind string, issuerName string) {
 
 	e.Use(middleware.Logger())
 
-	staticHandler := http.FileServer(http.FS(EmbededStatic))
-	e.GET("/static/*", echo.WrapHandler(http.StripPrefix("/static/", staticHandler)))
+	staticRoot, err := fs.Sub(EmbededStatic, "static")
+	if err != nil {
+		e.Logger.Fatal("Error as descent in static subdirectory", err)
+	}
+	staticHandler := http.FileServer(http.FS(staticRoot))
+	e.GET("/*", echo.WrapHandler(staticHandler))
 
 	e.GET("/selfcert/:domain/pem", getSelfCertHandler())
 
