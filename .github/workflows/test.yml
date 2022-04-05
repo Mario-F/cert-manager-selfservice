@@ -13,6 +13,12 @@ jobs:
     name: Go ${{ matrix.go }}
     steps:
       - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - run: cd web && yarn
+      - run: cd web && yarn build
       - name: Setup go
         uses: actions/setup-go@v2
         with:
