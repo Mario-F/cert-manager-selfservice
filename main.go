@@ -21,8 +21,18 @@ THE SOFTWARE.
 */
 package main
 
-import "github.com/Mario-F/cert-manager-selfservice/cmd"
+import (
+	"embed"
+
+	"github.com/Mario-F/cert-manager-selfservice/cmd"
+	"github.com/Mario-F/cert-manager-selfservice/internal/server"
+)
+
+//go:embed static
+var embededStatic embed.FS
 
 func main() {
+	server.EmbededStatic = &embededStatic
+
 	cmd.Execute()
 }

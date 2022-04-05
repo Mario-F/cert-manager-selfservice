@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"embed"
 	"fmt"
 	"net/http"
 	"time"
@@ -14,7 +15,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var e *echo.Echo
+var (
+	e             *echo.Echo
+	EmbededStatic *embed.FS
+)
 
 // Start is the entrypoint for starting the webserver
 func Start(port int, issuerKind string, issuerName string) {
@@ -28,6 +32,9 @@ func Start(port int, issuerKind string, issuerName string) {
 	e.Use(echoPrometheus.MetricsMiddleware())
 
 	e.Use(middleware.Logger())
+
+	staticHandler := http.FileServer(http.FS(EmbededStatic))
+	e.GET("/static/*", echo.WrapHandler(http.StripPrefix("/static/", staticHandler)))
 
 	e.GET("/", func(c echo.Context) error {
 		log.Debug("default handler called")
