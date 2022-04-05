@@ -13,7 +13,7 @@ jobs:
         go:
           - '1.17'
           - '1.18'
-    name: Go ${{ matrix.go }}
+    name: Go ${{ matrix.go }}, Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v2
 
