@@ -18,7 +18,8 @@ paths:
               schema:
                 type: object
                 properties:
-                  errors:
+                  messages:
+                    description: This are event messages produced by the cert-manager-selfservice
                     type: array
                     items:
                       type: object
@@ -33,7 +34,22 @@ paths:
                         severity:
                           type: string
                           enum:
-                          - "warning"
-                          - "fatal"
+                            - info
+                            - warning
+                            - error
                         message:
                           type: string
+                  certificates:
+                    description: This is a overview of all certificates status
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                      pending:
+                        type: integer
+                      ready:
+                        type: integer
+                      failed:
+                        type: integer
+                      unknown:
+                        type: integer
