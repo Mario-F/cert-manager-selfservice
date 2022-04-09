@@ -42,6 +42,12 @@ paths:
                   certificates:
                     description: This is a overview of all certificates status
                     type: object
+                    required:
+                      - total
+                      - pending
+                      - ready
+                      - failed
+                      - unknown
                     properties:
                       total:
                         type: integer
