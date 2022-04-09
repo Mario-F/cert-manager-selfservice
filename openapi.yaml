@@ -22,6 +22,10 @@ paths:
                     type: array
                     items:
                       type: object
+                      required:
+                        - time
+                        - message
+                        - severity
                       properties:
                         time:
                           type: string
