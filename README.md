@@ -47,6 +47,10 @@ If you run it in a cronjob the certificate will automatically renewed regullary.
 
 ## Development
 
+### Web
+
+The [web project](./web/README.md) will bundled on build time into the executable, so you need to make sure the web project is build before.
+
 ### Testing
 
 The most simplest usage (for testing) would to run cert-manager-selfservice with your local kubeconfig, this can be done by:
