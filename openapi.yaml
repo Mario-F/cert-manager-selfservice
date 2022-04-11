@@ -16,46 +16,51 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  messages:
-                    description: This are event messages produced by the cert-manager-selfservice
-                    type: array
-                    items:
-                      type: object
-                      required:
-                        - time
-                        - message
-                        - severity
-                      properties:
-                        time:
-                          type: string
-                          format: date-time
-                        severity:
-                          type: string
-                          enum:
-                            - info
-                            - warning
-                            - error
-                        message:
-                          type: string
-                  certificates:
-                    description: This is a overview of all certificates status
-                    type: object
-                    required:
-                      - total
-                      - pending
-                      - ready
-                      - failed
-                      - unknown
-                    properties:
-                      total:
-                        type: integer
-                      pending:
-                        type: integer
-                      ready:
-                        type: integer
-                      failed:
-                        type: integer
-                      unknown:
-                        type: integer
+                $ref: '#/components/schemas/Status'
+components:
+  schemas:
+    Status:
+      type: object
+      properties:
+        messages:
+          description: This are event messages produced by the cert-manager-selfservice
+          type: array
+          items:
+            type: object
+            required:
+              - time
+              - message
+              - severity
+            properties:
+              time:
+                type: string
+                format: date-time
+              severity:
+                type: string
+                enum:
+                  - info
+                  - warning
+                  - error
+              message:
+                type: string
+        certificates:
+          description: This is a overview of all certificates status
+          type: object
+          required:
+            - total
+            - pending
+            - ready
+            - failed
+            - unknown
+          properties:
+            total:
+              type: integer
+            pending:
+              type: integer
+            ready:
+              type: integer
+            failed:
+              type: integer
+            unknown:
+              type: integer
+
