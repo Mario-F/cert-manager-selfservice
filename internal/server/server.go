@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"time"
 
+	Openapi "github.com/Mario-F/cert-manager-selfservice/internal/gen"
 	echoPrometheus "github.com/globocom/echo-prometheus"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
@@ -19,6 +20,13 @@ var (
 	e             *echo.Echo
 	EmbededStatic *embed.FS
 )
+
+type OpenapiHandlerImpl struct{}
+
+func (h *OpenapiHandlerImpl) GetStatus(ctx echo.Context) error {
+	log.Debug("GetStatus")
+	return ctx.JSON(http.StatusOK, "OK")
+}
 
 // Start is the entrypoint for starting the webserver
 func Start(port int, issuerKind string, issuerName string) {
@@ -43,6 +51,9 @@ func Start(port int, issuerKind string, issuerName string) {
 	e.GET("/selfcert/:domain/pem", getSelfCertHandler())
 
 	e.GET("/cert/:domain/:crttype", getCertHandler(issuerRef))
+
+	OpenapiHandlerImpl := &OpenapiHandlerImpl{}
+	Openapi.RegisterHandlersWithBaseURL(e, OpenapiHandlerImpl, "/api/v1")
 
 	if err := e.Start(fmt.Sprintf(":%d", port)); err != nil && err != http.ErrServerClosed {
 		e.Logger.Fatal("shutting down the server")
