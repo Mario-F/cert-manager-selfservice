@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Mario-F/cert-manager-selfservice/internal/gen/api"
+	oapimiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
 	echoPrometheus "github.com/globocom/echo-prometheus"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
@@ -52,8 +53,13 @@ func Start(port int, issuerKind string, issuerName string) {
 
 	e.GET("/cert/:domain/:crttype", getCertHandler(issuerRef))
 
+	swagger, err := api.GetSwagger()
+	if err != nil {
+		log.Errorf("Error loading swagger spec\n: %s", err)
+	}
 	OpenapiHandlerImpl := &OpenapiHandlerImpl{}
-	api.RegisterHandlersWithBaseURL(e, OpenapiHandlerImpl, "/api/v1")
+	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidator(swagger))
+	api.RegisterHandlers(apiGroup, OpenapiHandlerImpl)
 
 	if err := e.Start(fmt.Sprintf(":%d", port)); err != nil && err != http.ErrServerClosed {
 		e.Logger.Fatal("shutting down the server")
