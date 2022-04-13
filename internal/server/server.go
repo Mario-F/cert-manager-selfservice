@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"time"
 
-	Openapi "github.com/Mario-F/cert-manager-selfservice/internal/gen"
+	"github.com/Mario-F/cert-manager-selfservice/internal/gen/api"
 	echoPrometheus "github.com/globocom/echo-prometheus"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
@@ -53,7 +53,7 @@ func Start(port int, issuerKind string, issuerName string) {
 	e.GET("/cert/:domain/:crttype", getCertHandler(issuerRef))
 
 	OpenapiHandlerImpl := &OpenapiHandlerImpl{}
-	Openapi.RegisterHandlersWithBaseURL(e, OpenapiHandlerImpl, "/api/v1")
+	api.RegisterHandlersWithBaseURL(e, OpenapiHandlerImpl, "/api/v1")
 
 	if err := e.Start(fmt.Sprintf(":%d", port)); err != nil && err != http.ErrServerClosed {
 		e.Logger.Fatal("shutting down the server")
