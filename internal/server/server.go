@@ -57,6 +57,9 @@ func Start(port int, issuerKind string, issuerName string) {
 	if err != nil {
 		log.Errorf("Error loading swagger spec\n: %s", err)
 	}
+	e.GET("/api/spec/v1", func(ctx echo.Context) error {
+		return ctx.JSON(http.StatusOK, swagger)
+	})
 	OpenapiHandlerImpl := &OpenapiHandlerImpl{}
 	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidator(swagger))
 	api.RegisterHandlers(apiGroup, OpenapiHandlerImpl)
