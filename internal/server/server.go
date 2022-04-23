@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/Mario-F/cert-manager-selfservice/internal/gen/api"
+	"github.com/Mario-F/cert-manager-selfservice/internal/server/handlers"
 	oapimiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
 	echoPrometheus "github.com/globocom/echo-prometheus"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
@@ -21,13 +22,6 @@ var (
 	e             *echo.Echo
 	EmbededStatic *embed.FS
 )
-
-type OpenapiHandlerImpl struct{}
-
-func (h *OpenapiHandlerImpl) GetStatus(ctx echo.Context) error {
-	log.Debug("GetStatus")
-	return ctx.JSON(http.StatusOK, "OK")
-}
 
 // Start is the entrypoint for starting the webserver
 func Start(port int, issuerKind string, issuerName string) {
@@ -60,7 +54,7 @@ func Start(port int, issuerKind string, issuerName string) {
 	e.GET("/api/spec/v1", func(ctx echo.Context) error {
 		return ctx.JSON(http.StatusOK, swagger)
 	})
-	OpenapiHandlerImpl := &OpenapiHandlerImpl{}
+	OpenapiHandlerImpl := &handlers.OpenAPIV1HandlerImpl{}
 	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidator(swagger))
 	api.RegisterHandlers(apiGroup, OpenapiHandlerImpl)
 
