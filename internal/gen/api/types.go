@@ -7,34 +7,40 @@ import (
 	"time"
 )
 
-// Defines values for StatusMessagesSeverity.
+// Defines values for StatusMessageSeverity.
 const (
-	StatusMessagesSeverityError StatusMessagesSeverity = "error"
+	StatusMessageSeverityError StatusMessageSeverity = "error"
 
-	StatusMessagesSeverityInfo StatusMessagesSeverity = "info"
+	StatusMessageSeverityInfo StatusMessageSeverity = "info"
 
-	StatusMessagesSeverityWarning StatusMessagesSeverity = "warning"
+	StatusMessageSeverityWarning StatusMessageSeverity = "warning"
 )
 
 // Status defines model for Status.
 type Status struct {
 	// This is a overview of all certificates status
-	Certificates *struct {
-		Failed  int `json:"failed"`
-		Pending int `json:"pending"`
-		Ready   int `json:"ready"`
-		Total   int `json:"total"`
-		Unknown int `json:"unknown"`
-	} `json:"certificates,omitempty"`
+	Certificates StatusCertificates `json:"certificates"`
 
 	// This are event messages produced by the cert-manager-selfservice
-	Messages *[]struct {
-		Message  string                 `json:"message"`
-		Severity StatusMessagesSeverity `json:"severity"`
-		Time     time.Time              `json:"time"`
-	} `json:"messages,omitempty"`
+	Messages []StatusMessage `json:"messages"`
 }
 
-// StatusMessagesSeverity defines model for Status.Messages.Severity.
-type StatusMessagesSeverity string
+// This is a overview of all certificates status
+type StatusCertificates struct {
+	Failed  int `json:"failed"`
+	Pending int `json:"pending"`
+	Ready   int `json:"ready"`
+	Total   int `json:"total"`
+	Unknown int `json:"unknown"`
+}
+
+// StatusMessage defines model for StatusMessage.
+type StatusMessage struct {
+	Message  string                `json:"message"`
+	Severity StatusMessageSeverity `json:"severity"`
+	Time     time.Time             `json:"time"`
+}
+
+// StatusMessageSeverity defines model for StatusMessage.Severity.
+type StatusMessageSeverity string
 
