@@ -2,7 +2,7 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { CSidebar, CSidebarBrand, CSidebarNav, CNavItem, CBadge, CNavGroup, CSidebarToggler } from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'
-import * as icons from '@coreui/icons'
+import * as icons from '@coreui/icons/js/free'
 </script>
 
 <template>
