@@ -1,6 +1,8 @@
 $enable-ltr: true;
 $enable-rtl: true;
 
+@import '@coreui/coreui/dist/css/coreui.min.css';
+@import '@coreui/icons/css/free.min.css';
 @import "@coreui/coreui/scss/coreui";
 
 .wrapper {
