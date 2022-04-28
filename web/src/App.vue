@@ -60,7 +60,7 @@ const header = {
   </CSidebar>
 
   <div class="wrapper d-flex flex-column min-vh-100 bg-light">
-    <CHeader position="sticky" class="mb-4">
+    <CHeader>
       <CContainer fluid>
         <CHeaderBrand href="#">Header</CHeaderBrand>
         <CHeaderToggler @click="header.visible.value = !header.visible.value" />
