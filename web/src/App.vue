@@ -20,13 +20,21 @@ import {
 } from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'
 import * as icons from '@coreui/icons/js/free'
+import { ref } from 'vue'
 
-let visible = true
+const sidebar = {
+  visible: ref(true),
+  unfoldable: ref(true),
+}
+const header = {
+  visible: ref(true),
+  unfoldable: ref(true),
+}
 </script>
 
 <template>
   <div>
-    <CSidebar visible>
+    <CSidebar position="fixed" :unfoldable="sidebar.unfoldable.value" :visible="sidebar.visible.value">
       <CSidebarBrand>Sidebar Brand</CSidebarBrand>
       <CSidebarNav>
         <li class="nav-title">Nav Title</li>
@@ -51,15 +59,15 @@ let visible = true
           <CNavItem href="#"> <CIcon customClassName="nav-icon" :icon="icons.cilPuzzle" /> Nav dropdown item </CNavItem>
         </CNavGroup>
       </CSidebarNav>
-      <CSidebarToggler />
+      <CSidebarToggler class="d-none d-lg-flex" @click="sidebar.unfoldable.value = !sidebar.unfoldable.value" />
     </CSidebar>
 
     <div class="wrapper d-flex flex-column min-vh-100 bg-light">
       <CHeader>
         <CContainer fluid>
           <CHeaderBrand href="#">Header</CHeaderBrand>
-          <CHeaderToggler @click="visible = !visible" />
-          <CCollapse class="header-collapse" :visible="visible">
+          <CHeaderToggler @click="header.visible.value = !header.visible.value" />
+          <CCollapse class="header-collapse" :visible="header.visible.value">
             <CHeaderNav>
               <CNavItem>
                 <CNavLink href="#" active> Home </CNavLink>
