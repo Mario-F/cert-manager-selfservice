@@ -11,8 +11,9 @@ import {
   CContainer,
   CHeader,
   CHeaderBrand,
-  CHeaderToggler,
   CHeaderNav,
+  CDropdownMenu,
+  CDropdownToggle,
   CNavLink,
   CDropdown,
   CDropdownItem,
@@ -58,6 +59,25 @@ const sidebar = {
     <CHeader>
       <CContainer fluid>
         <CHeaderBrand href="#">Header</CHeaderBrand>
+        <CHeaderNav>
+          <CNavItem>
+            <CNavLink href="#" active> Home </CNavLink>
+          </CNavItem>
+          <CNavItem>
+            <CNavLink href="#">Link</CNavLink>
+          </CNavItem>
+          <CDropdown togglerText="Dropdown" variant="nav-item">
+            <CDropdownToggle color="primary">Dropdown Button</CDropdownToggle>
+            <CDropdownMenu>
+              <CDropdownItem href="#">Action</CDropdownItem>
+              <CDropdownItem href="#">Another action</CDropdownItem>
+              <CDropdownItem href="#">Something else here</CDropdownItem>
+            </CDropdownMenu>
+          </CDropdown>
+          <CNavItem>
+            <CNavLink href="#" disabled> Disabled </CNavLink>
+          </CNavItem>
+        </CHeaderNav>
       </CContainer>
     </CHeader>
     <div class="body flex-grow-1 px-3">
