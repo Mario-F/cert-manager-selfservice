@@ -59,12 +59,12 @@ const sidebar = {
     <CHeader>
       <CContainer fluid>
         <CHeaderBrand href="#">Header</CHeaderBrand>
-        <CHeaderNav>
+        <CHeaderNav variant="pills">
           <CNavItem>
-            <CNavLink href="#" active> Home </CNavLink>
+            <RouterLink to="/"><CNavLink>Home</CNavLink></RouterLink>
           </CNavItem>
           <CNavItem>
-            <CNavLink href="#">Link</CNavLink>
+            <RouterLink to="/about"><CNavLink>About</CNavLink></RouterLink>
           </CNavItem>
           <CDropdown togglerText="Dropdown" variant="nav-item">
             <CDropdownToggle color="primary">Dropdown Button</CDropdownToggle>
