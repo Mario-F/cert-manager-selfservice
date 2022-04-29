@@ -12,7 +12,6 @@ import {
   CHeader,
   CHeaderBrand,
   CHeaderToggler,
-  CCollapse,
   CHeaderNav,
   CNavLink,
   CDropdown,
@@ -24,11 +23,7 @@ import { ref } from 'vue'
 
 const sidebar = {
   visible: ref(true),
-  unfoldable: ref(true),
-}
-const header = {
-  visible: ref(true),
-  unfoldable: ref(true),
+  unfoldable: ref(false),
 }
 </script>
 
@@ -63,29 +58,6 @@ const header = {
     <CHeader>
       <CContainer fluid>
         <CHeaderBrand href="#">Header</CHeaderBrand>
-        <CHeaderToggler @click="header.visible.value = !header.visible.value" />
-        <CCollapse class="header-collapse" :visible="header.visible.value">
-          <CHeaderNav>
-            <CNavItem>
-              <CNavLink href="#" active> Home </CNavLink>
-            </CNavItem>
-            <CNavItem>
-              <CNavLink href="#">Link</CNavLink>
-            </CNavItem>
-            <CDropdown togglerText="Dropdown" variant="nav-item">
-              <CDropdownItem href="#">Action</CDropdownItem>
-              <CDropdownItem href="#">Another action</CDropdownItem>
-              <CDropdownItem href="#">Something else here</CDropdownItem>
-            </CDropdown>
-            <CNavItem>
-              <CNavLink href="#" disabled> Disabled </CNavLink>
-            </CNavItem>
-          </CHeaderNav>
-          <!-- <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search">
-            <button class="btn btn-outline-success" type="submit">Search</button>
-          </form> -->
-        </CCollapse>
       </CContainer>
     </CHeader>
     <div class="body flex-grow-1 px-3">
