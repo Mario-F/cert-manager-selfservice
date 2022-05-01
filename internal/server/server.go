@@ -4,7 +4,6 @@ import (
 	"context"
 	"embed"
 	"fmt"
-	"io/fs"
 	"net/http"
 	"time"
 
@@ -36,12 +35,13 @@ func Start(port int, issuerKind string, issuerName string) {
 
 	e.Use(middleware.Logger())
 
-	staticRoot, err := fs.Sub(EmbededStatic, "web/dist")
-	if err != nil {
-		e.Logger.Fatal("Error as descent in static subdirectory", err)
-	}
-	staticHandler := http.FileServer(http.FS(staticRoot))
-	e.GET("/*", echo.WrapHandler(staticHandler))
+	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
+		Root:       "web/dist",   // This is the path to your SPA build folder, the folder that is created from running "npm build"
+		Index:      "index.html", // This is the default html page for your SPA
+		Browse:     false,
+		HTML5:      true,
+		Filesystem: http.FS(EmbededStatic),
+	}))
 
 	e.GET("/selfcert/:domain/pem", getSelfCertHandler())
 
