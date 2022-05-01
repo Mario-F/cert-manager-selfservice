@@ -9,6 +9,7 @@ generate:
 	oapi-codegen -generate client -package api openapi.yaml > internal/gen/api/client.go
 	oapi-codegen -generate server -package api openapi.yaml > internal/gen/api/server.go
 	oapi-codegen -generate spec -package api openapi.yaml > internal/gen/api/spec.go
+	openapi-generator generate -i openapi.yaml -g typescript-axios -o web/src/gen/api
 
 # Run all the tests
 test:

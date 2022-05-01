@@ -17,6 +17,7 @@
     "@coreui/icons": "^2.1.0",
     "@coreui/icons-vue": "^2.0.0",
     "@coreui/vue": "^4.3.0",
+    "axios": "^0.27.2",
     "pinia": "^2.0.13",
     "swagger-ui": "^4.10.3",
     "swagger-ui-dist": "^4.10.3",
