@@ -36,8 +36,8 @@ func Start(port int, issuerKind string, issuerName string) {
 	e.Use(middleware.Logger())
 
 	e.Use(middleware.StaticWithConfig(middleware.StaticConfig{
-		Root:       "web/dist",   // This is the path to your SPA build folder, the folder that is created from running "npm build"
-		Index:      "index.html", // This is the default html page for your SPA
+		Root:       "web/dist",
+		Index:      "index.html",
 		Browse:     false,
 		HTML5:      true,
 		Filesystem: http.FS(EmbededStatic),
