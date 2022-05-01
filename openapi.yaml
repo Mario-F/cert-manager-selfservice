@@ -7,6 +7,16 @@ info:
 servers:
   - url: /api/v1
 paths:
+  /info:
+    get:
+      summary: Returns information about the cert-manager-selfservice
+      responses:
+        '200':
+          description: A json object represent the info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Info'
   /status:
     get:
       summary: Returns status of the cert-manager-selfservice
@@ -19,6 +29,14 @@ paths:
                 $ref: '#/components/schemas/Status'
 components:
   schemas:
+    Info:
+      type: object
+      required:
+        - version
+      properties:
+        version:
+          description: The version of the cert-manager-selfservice
+          type: string
     Status:
       type: object
       properties:

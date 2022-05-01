@@ -5,7 +5,7 @@ builds:
 - env:
     - CGO_ENABLED=0
   ldflags:
-    - -s -w -X github.com/Mario-F/cert-manager-selfservice/cmd.Version=v{{.Version}}
+    - -s -w -X github.com/Mario-F/cert-manager-selfservice/internal/config.Version=v{{.Version}}
   goos:
   - freebsd
   - linux

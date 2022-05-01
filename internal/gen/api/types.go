@@ -16,6 +16,12 @@ const (
 	StatusMessageSeverityWarning StatusMessageSeverity = "warning"
 )
 
+// Info defines model for Info.
+type Info struct {
+	// The version of the cert-manager-selfservice
+	Version string `json:"version"`
+}
+
 // Status defines model for Status.
 type Status struct {
 	// This is a overview of all certificates status

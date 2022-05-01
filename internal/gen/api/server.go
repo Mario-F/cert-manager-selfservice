@@ -9,6 +9,9 @@ import (
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Returns information about the cert-manager-selfservice
+	// (GET /info)
+	GetInfo(ctx echo.Context) error
 	// Returns status of the cert-manager-selfservice
 	// (GET /status)
 	GetStatus(ctx echo.Context) error
@@ -17,6 +20,15 @@ type ServerInterface interface {
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// GetInfo converts echo context to params.
+func (w *ServerInterfaceWrapper) GetInfo(ctx echo.Context) error {
+	var err error
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetInfo(ctx)
+	return err
 }
 
 // GetStatus converts echo context to params.
@@ -56,6 +68,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.GET(baseURL+"/info", wrapper.GetInfo)
 	router.GET(baseURL+"/status", wrapper.GetStatus)
 
 }
