@@ -253,9 +253,6 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@file:stub/types__react":
-  version "0.0.0"
-
 "@types/scheduler@*":
   version "0.16.2"
   resolved "https://registry.yarnpkg.com/@types/scheduler/-/scheduler-0.16.2.tgz#1a62f89525723dde24ba1b01b092bf5df8ad4d39"
