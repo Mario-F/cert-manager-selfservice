@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
+import 'swagger-ui/dist/swagger-ui.css'
 import SwaggerUI from 'swagger-ui'
 
 onMounted(() => {
