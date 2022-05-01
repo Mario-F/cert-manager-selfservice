@@ -46,6 +46,13 @@ const sidebar = {
           <CBadge color="primary" class="ms-auto">NEW</CBadge>
         </CNavItem>
       </RouterLink>
+      <RouterLink to="/swagger">
+        <CNavItem href="#">
+          <CIcon customClassName="nav-icon" :icon="icons.cilSpeedometer" />
+          API
+          <CBadge color="primary" class="ms-auto">Swagger</CBadge>
+        </CNavItem>
+      </RouterLink>
       <CNavGroup>
         <template #togglerContent> <CIcon customClassName="nav-icon" :icon="icons.cilPuzzle" /> Nav dropdown </template>
         <CNavItem href="#"> <CIcon customClassName="nav-icon" :icon="icons.cilPuzzle" /> Nav dropdown item </CNavItem>
