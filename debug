@@ -2,7 +2,6 @@
 #
 # Build frontend
 #
-#
 ACT_DIR=$(pwd)
 cd web
 yarn
