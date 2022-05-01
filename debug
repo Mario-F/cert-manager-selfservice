@@ -1,3 +1,17 @@
 #!/bin/sh
+#
+# Build frontend
+#
+#
+ACT_DIR=$(pwd)
+cd web
+yarn
+yarn build
+cd $ACT_DIR
+
+
+#
+# Start debugging backend
+#
 DEBUG_PORT=${DEBUG_PORT:-8345}
 dlv debug --listen=:${DEBUG_PORT} --headless --log --api-version=2 -- "$@"
