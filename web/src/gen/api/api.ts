@@ -19,7 +19,7 @@ import globalAxios, * as axios_1 from 'axios';
 // @ts-ignore
 import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObject, setBearerAuthToObject, setOAuthToObject, setSearchParams, serializeDataIfNeeded, toPathString, createRequestFunction } from './common';
 // @ts-ignore
-import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from './base';
+import * as base from './base';
 
 /**
  *
@@ -137,7 +137,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        infoGet: async (options: axios_1.AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        infoGet: async (options: axios_1.AxiosRequestConfig = {}): Promise<base.RequestArgs> => {
             const localVarPath = `/info`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -167,7 +167,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        statusGet: async (options: axios_1.AxiosRequestConfig = {}): Promise<RequestArgs> => {
+        statusGet: async (options: axios_1.AxiosRequestConfig = {}): Promise<base.RequestArgs> => {
             const localVarPath = `/status`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -209,7 +209,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async infoGet(options?: axios_1.AxiosRequestConfig): Promise<(axios?: axios_1.AxiosInstance, basePath?: string) => axios_1.AxiosPromise<Info>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.infoGet(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, base.BASE_PATH, configuration);
         },
         /**
          *
@@ -219,7 +219,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          */
         async statusGet(options?: axios_1.AxiosRequestConfig): Promise<(axios?: axios_1.AxiosInstance, basePath?: string) => axios_1.AxiosPromise<Status>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.statusGet(options);
-            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, base.BASE_PATH, configuration);
         },
     }
 };
@@ -258,7 +258,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
  * @class DefaultApi
  * @extends {BaseAPI}
  */
-export class DefaultApi extends BaseAPI {
+export class DefaultApi extends base.BaseAPI {
     /**
      *
      * @summary Returns information about the cert-manager-selfservice
