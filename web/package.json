@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
+    "generate": "openapi --input ../openapi.yaml --output src/gen/api --client axios",
     "build": "vue-tsc --noEmit --composite false && vite build",
     "preview": "vite preview --port 5050",
     "test:unit": "vitest --environment jsdom",
@@ -40,6 +41,7 @@
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-vue": "^8.7.1",
     "jsdom": "^19.0.0",
+    "openapi-typescript-codegen": "^0.22.0",
     "prettier": "^2.5.1",
     "sass": "^1.51.0",
     "start-server-and-test": "^1.14.0",

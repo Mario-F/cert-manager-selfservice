@@ -4,7 +4,7 @@ import { CSidebar, CSidebarBrand, CSidebarNav, CNavItem, CBadge, CSidebarToggler
 import { CIcon } from '@coreui/icons-vue'
 import * as icons from '@coreui/icons'
 import { ref, onMounted } from 'vue'
-import { DefaultApi } from './gen/api'
+import { DefaultService } from './gen/api'
 
 const sidebar = {
   unfoldable: ref(false),
@@ -15,9 +15,8 @@ const info = {
 }
 
 onMounted(async () => {
-  const api = new DefaultApi()
-  const resInfo = await api.infoGet()
-  info.version.value = resInfo.data.version
+  const resInfo = await DefaultService.getInfo()
+  info.version.value = resInfo.version
 })
 </script>
 
