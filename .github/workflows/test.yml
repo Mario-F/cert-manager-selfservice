@@ -23,7 +23,6 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: cd web && yarn
       - run: cd web && yarn test:unit
-      - run: cd web && yarn typecheck
       - run: cd web && yarn lint
       - run: cd web && yarn build
 
