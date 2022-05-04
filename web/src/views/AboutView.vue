@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CContainer, CRow, CCol, CCard, CCardBody, CCardTitle, CCardText, CButton, CHeaderBrand } from '@coreui/vue'
+import { CContainer, CRow, CCol, CCard, CCardBody, CCardTitle, CCardText, CHeaderBrand } from '@coreui/vue'
 import { CIcon } from '@coreui/icons-vue'
 import * as icons from '@coreui/icons'
 import { onMounted, ref } from 'vue'
