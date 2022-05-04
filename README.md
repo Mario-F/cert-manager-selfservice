@@ -47,6 +47,15 @@ If you run it in a cronjob the certificate will automatically renewed regullary.
 
 ## Development
 
+### OpenAPI
+
+The API Server and Client are generated using [OpenAPI](./openapi.yaml), generation can be done with `make generate`.
+
+The following tools are needed to generate the OpenAPI files:
+
+* GO: [oapi-codegen](https://github.com/deepmap/oapi-codegen)
+* Typescript: [openapi](https://github.com/openapi/openapi)
+
 ### Web
 
 The [web project](./web/README.md) will bundled on build time into the executable, so you need to make sure the web project is build before.
