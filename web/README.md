@@ -28,7 +28,7 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ## Project Setup
 
 ```sh
-npm install
+yarn
 ```
 
 ### Compile and Hot-Reload for Development
@@ -37,27 +37,10 @@ npm install
 yarn dev
 ```
 
-### Type-Check, Compile and Minify for Production
+The proxy will forward to `localhost:8030` this is the default port of the server component, so make sure you're running the server.
+
+### Compile and Minify for Production
 
 ```sh
 yarn build
-```
-
-### Run Unit Tests with [Vitest](https://vitest.dev/)
-
-```sh
-yarn test:unit
-```
-
-### Run End-to-End Tests with [Cypress](https://www.cypress.io/)
-
-```sh
-yarn build
-yarn test:e2e # or `yarn test:e2e:ci` for headless testing
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-yarn lint
 ```
