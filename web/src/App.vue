@@ -37,7 +37,7 @@ const sidebar = {
     <CSidebarToggler class="d-none d-lg-flex" @click="sidebar.unfoldable.value = !sidebar.unfoldable.value" />
   </CSidebar>
 
-  <div class="wrapper">
+  <div class="router-wrapper">
     <RouterView />
   </div>
 </template>

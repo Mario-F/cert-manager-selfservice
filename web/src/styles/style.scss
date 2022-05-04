@@ -5,7 +5,7 @@ $enable-rtl: true;
 @import '@coreui/icons/css/free.min.css';
 @import "@coreui/coreui/scss/coreui";
 
-.wrapper {
+.router-wrapper {
   width: 100%;
   @include ltr-rtl('padding-left', var(--cui-sidebar-occupy-start, 0));
   will-change: auto;
