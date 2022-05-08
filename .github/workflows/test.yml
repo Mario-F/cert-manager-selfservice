@@ -22,9 +22,10 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: cd web && yarn
-      - run: cd web && yarn test:unit
-      - run: cd web && yarn lint
       - run: cd web && yarn build
+      - run: cd web && yarn lint
+      - run: cd web && yarn test:unit
+      - run: cd web && yarn test:e2e:ci
 
       #- name: Cypress run
       #  uses: cypress-io/github-action@v2
