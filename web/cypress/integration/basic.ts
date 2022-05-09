@@ -15,4 +15,11 @@ describe('checking absolute basics', () => {
     cy.visit('/')
     cy.contains('div', 'Cert Manager Selfservice')
   })
+
+  it('get to about from root', () => {
+    mockInfo()
+    cy.visit('/')
+    cy.contains('a', 'About').click()
+    cy.url().should('include', '/about')
+  })
 })
