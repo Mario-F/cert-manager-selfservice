@@ -27,12 +27,6 @@ jobs:
       - run: cd web && yarn test:unit
       - run: cd web && yarn test:e2e:ci
 
-      #- name: Cypress run
-      #  uses: cypress-io/github-action@v2
-      #  with:
-      #    working-directory: web
-      #- run: cd web && yarn test:e2e:ci
-
       - name: Setup go
         uses: actions/setup-go@v2
         with:
