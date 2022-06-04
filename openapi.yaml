@@ -27,6 +27,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Status'
+  /certificate/{domain}:
+    get:
+      summary: Return and eventually create certificate for the given domain
+      parameters:
+        - name: domain
+          in: path
+          description: The domain to get the certificate for
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A json object represent the certificate
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+        '202':
+          description: Server tries to aquire the certificate you should try again later
+          content:
+            html/text: {}
 components:
   schemas:
     Info:
@@ -88,4 +109,24 @@ components:
           type: integer
         unknown:
           type: integer
-
+    Certificate:
+      description: This is a single certificate for consuming on clients
+      type: object
+      required:
+        - domain
+        - authority
+        - key
+        - crt
+      properties:
+        domain:
+          description: The domain for which the certificate is issued
+          type: string
+        authority:
+          description: The certificate authority for the certificate
+          type: string
+        key:
+          description: The private key for the certificate
+          type: string
+        crt:
+          description: The certificate for the certificate
+          type: string
