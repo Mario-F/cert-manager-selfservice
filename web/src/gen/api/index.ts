@@ -6,6 +6,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { Certificate } from './models/Certificate';
 export type { Info } from './models/Info';
 export type { Status } from './models/Status';
 export type { StatusCertificates } from './models/StatusCertificates';

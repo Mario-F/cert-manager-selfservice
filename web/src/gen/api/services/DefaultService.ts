@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { Certificate } from '../models/Certificate';
 import type { Info } from '../models/Info';
 import type { Status } from '../models/Status';
 
@@ -31,6 +32,25 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/status',
+        });
+    }
+
+    /**
+     * Return and eventually create certificate for the given domain
+     * @param domain The domain to get the certificate for
+     * @returns Certificate A json object represent the certificate
+     * @returns any Server tries to aquire the certificate you should try again later
+     * @throws ApiError
+     */
+    public static getCertificate(
+        domain: string,
+    ): CancelablePromise<Certificate | any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/certificate/{domain}',
+            path: {
+                'domain': domain,
+            },
         });
     }
 

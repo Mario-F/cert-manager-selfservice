@@ -4,11 +4,18 @@
 package api
 
 import (
+	"fmt"
+	"net/http"
+
+	"github.com/deepmap/oapi-codegen/pkg/runtime"
 	"github.com/labstack/echo/v4"
 )
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// Return and eventually create certificate for the given domain
+	// (GET /certificate/{domain})
+	GetCertificateDomain(ctx echo.Context, domain string) error
 	// Returns information about the cert-manager-selfservice
 	// (GET /info)
 	GetInfo(ctx echo.Context) error
@@ -20,6 +27,22 @@ type ServerInterface interface {
 // ServerInterfaceWrapper converts echo contexts to parameters.
 type ServerInterfaceWrapper struct {
 	Handler ServerInterface
+}
+
+// GetCertificateDomain converts echo context to params.
+func (w *ServerInterfaceWrapper) GetCertificateDomain(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "domain" -------------
+	var domain string
+
+	err = runtime.BindStyledParameterWithLocation("simple", false, "domain", runtime.ParamLocationPath, ctx.Param("domain"), &domain)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter domain: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshalled arguments
+	err = w.Handler.GetCertificateDomain(ctx, domain)
+	return err
 }
 
 // GetInfo converts echo context to params.
@@ -68,6 +91,7 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
+	router.GET(baseURL+"/certificate/:domain", wrapper.GetCertificateDomain)
 	router.GET(baseURL+"/info", wrapper.GetInfo)
 	router.GET(baseURL+"/status", wrapper.GetStatus)
 

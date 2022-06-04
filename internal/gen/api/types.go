@@ -16,6 +16,21 @@ const (
 	StatusMessageSeverityWarning StatusMessageSeverity = "warning"
 )
 
+// This is a single certificate for consuming on clients
+type Certificate struct {
+	// The certificate authority for the certificate
+	Authority string `json:"authority"`
+
+	// The certificate for the certificate
+	Crt string `json:"crt"`
+
+	// The domain for which the certificate is issued
+	Domain string `json:"domain"`
+
+	// The private key for the certificate
+	Key string `json:"key"`
+}
+
 // Info defines model for Info.
 type Info struct {
 	// The version of the cert-manager-selfservice
