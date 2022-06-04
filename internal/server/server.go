@@ -56,6 +56,7 @@ func Start(port int, issuerKind string, issuerName string) {
 	})
 	OpenapiHandlerImpl := &handlers.OpenAPIV1HandlerImpl{}
 	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidator(swagger))
+	handlers.IssuerRef = issuerRef
 	api.RegisterHandlers(apiGroup, OpenapiHandlerImpl)
 
 	if err := e.Start(fmt.Sprintf(":%d", port)); err != nil && err != http.ErrServerClosed {
