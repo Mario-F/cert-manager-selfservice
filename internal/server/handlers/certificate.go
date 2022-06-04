@@ -19,6 +19,7 @@ func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain str
 		return http.ErrAbortHandler
 	}
 
+	// Todo: this businesslogic should be handled by kube/cert
 	if len(certResult.CertsFound) == 0 {
 		log.Infof("No certs found, creating new cert for domain %s with %s of name %s", domain, IssuerRef.Kind, IssuerRef.Name)
 		err := kube.CreateCertificate(domain, IssuerRef)
