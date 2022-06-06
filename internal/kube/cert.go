@@ -169,6 +169,7 @@ func GetCertificate(domain string, updateAccess bool, notFoundCreate bool) (Cert
 		if err != nil {
 			return result, err
 		}
+		result.Created = true
 	}
 
 	result.CertsFound = kCerts
