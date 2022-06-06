@@ -17,9 +17,12 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 )
 
+var IssuerRef cmmeta.ObjectReference
+
 type CertifcateResult struct {
 	Domain     string
 	CertsFound []KubeCertificate
+	Created    bool
 }
 
 type KubeCertificate struct {
@@ -131,7 +134,7 @@ func (k KubeCertificate) Delete() error {
 	return nil
 }
 
-func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) {
+func GetCertificate(domain string, updateAccess bool, notFoundCreate bool) (CertifcateResult, error) {
 	log.Infof("Search for domain %s certificate", domain)
 	result := CertifcateResult{Domain: domain}
 
@@ -156,6 +159,15 @@ func GetCertificate(domain string, updateAccess bool) (CertifcateResult, error) 
 				}
 				break
 			}
+		}
+	}
+
+	// Create cert if not found
+	if len(kCerts) == 0 && notFoundCreate {
+		log.Infof("Create certificate for domain %s", domain)
+		err = CreateCertificate(domain, IssuerRef)
+		if err != nil {
+			return result, err
 		}
 	}
 

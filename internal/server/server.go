@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Mario-F/cert-manager-selfservice/internal/gen/api"
+	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
 	"github.com/Mario-F/cert-manager-selfservice/internal/server/handlers"
 	oapimiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
 	echoPrometheus "github.com/globocom/echo-prometheus"
@@ -56,7 +57,7 @@ func Start(port int, issuerKind string, issuerName string) {
 	})
 	OpenapiHandlerImpl := &handlers.OpenAPIV1HandlerImpl{}
 	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidator(swagger))
-	handlers.IssuerRef = issuerRef
+	kube.IssuerRef = issuerRef
 	api.RegisterHandlers(apiGroup, OpenapiHandlerImpl)
 
 	if err := e.Start(fmt.Sprintf(":%d", port)); err != nil && err != http.ErrServerClosed {

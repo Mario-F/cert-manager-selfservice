@@ -13,26 +13,24 @@ func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain str
 	res := &api.Certificate{}
 	res.Domain = domain
 
-	certResult, err := kube.GetCertificate(domain, true)
+	certResult, err := kube.GetCertificate(domain, true, true)
 	if err != nil {
 		log.Errorf("Error: %v+", err)
 		return http.ErrAbortHandler
 	}
 
-	// Todo: this businesslogic should be handled by kube/cert
-	if len(certResult.CertsFound) == 0 {
-		log.Infof("No certs found, creating new cert for domain %s with %s of name %s", domain, IssuerRef.Kind, IssuerRef.Name)
-		err := kube.CreateCertificate(domain, IssuerRef)
-		if err != nil {
-			log.Errorf("Error: %v+", err)
-			return http.ErrAbortHandler
-		}
-		return ctx.NoContent(http.StatusAccepted)
-	}
-
 	if len(certResult.CertsFound) > 1 {
 		log.Errorf("More than one certificate found: %d", len(certResult.CertsFound))
 		return http.ErrAbortHandler
+	}
+
+	if len(certResult.CertsFound) == 0 {
+		if certResult.Created {
+			log.Infof("Cert for domain %s has not existst but was created now", domain)
+			return ctx.NoContent(http.StatusAccepted)
+		}
+		log.Infof("Cert for domain %s does not exists and cannot be created", domain)
+		return ctx.NoContent(http.StatusNotFound)
 	}
 
 	cert := certResult.CertsFound[0]

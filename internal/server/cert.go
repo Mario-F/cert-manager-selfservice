@@ -21,7 +21,7 @@ func getCertHandler(issuerRef cmmeta.ObjectReference) echo.HandlerFunc {
 		crttype := c.Param("crttype")
 		log.Infof("Certservice called with domain: %s", domain)
 
-		certResult, err := kube.GetCertificate(domain, true)
+		certResult, err := kube.GetCertificate(domain, true, false)
 		if err != nil {
 			log.Errorf("Error: %v+", err)
 			return http.ErrAbortHandler
