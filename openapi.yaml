@@ -49,6 +49,7 @@ paths:
               - crt
               - key
               - ca
+              - pem
       responses:
         '200':
           description: A json object represent the certificate

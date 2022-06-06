@@ -45,7 +45,7 @@ export class DefaultService {
      */
     public static getCertificate(
         domain: string,
-        format: 'json' | 'crt' | 'key' | 'ca' = 'json',
+        format: 'json' | 'crt' | 'key' | 'ca' | 'pem' = 'json',
     ): CancelablePromise<Certificate | any> {
         return __request(OpenAPI, {
             method: 'GET',
