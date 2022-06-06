@@ -50,6 +50,9 @@ func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain str
 	res.Crt = string(secretData["tls.crt"])
 	res.Key = string(secretData["tls.key"])
 
+	if params.Format == nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Missing format parameter")
+	}
 	log.Debugf("Output format is: %s", *params.Format)
 	switch *params.Format {
 	case "crt":
@@ -58,7 +61,11 @@ func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain str
 		return ctx.HTML(http.StatusOK, res.Key)
 	case "ca":
 		return ctx.HTML(http.StatusOK, res.Authority)
-	default:
+	case "pem":
+		return ctx.HTML(http.StatusOK, res.Crt+res.Key+res.Authority)
+	case "json":
 		return ctx.JSON(http.StatusOK, res)
+	default:
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid format")
 	}
 }
