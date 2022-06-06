@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CContainer, CRow, CCol, CCard, CCardBody, CCardTitle, CCardText, CHeaderBrand } from '@coreui/vue'
+import { CContainer, CRow, CCol, CCard, CCardBody, CHeaderBrand } from '@coreui/vue'
 </script>
 
 <template>
