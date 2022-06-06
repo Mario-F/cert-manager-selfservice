@@ -46,8 +46,6 @@ func Start(port int, issuerKind string, issuerName string) {
 
 	e.GET("/selfcert/:domain/pem", getSelfCertHandler())
 
-	e.GET("/cert/:domain/:crttype", getCertHandler(issuerRef))
-
 	swagger, err := api.GetSwagger()
 	if err != nil {
 		log.Errorf("Error loading swagger spec\n: %s", err)
