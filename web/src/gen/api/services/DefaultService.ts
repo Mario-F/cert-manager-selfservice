@@ -51,6 +51,9 @@ export class DefaultService {
             path: {
                 'domain': domain,
             },
+            errors: {
+                404: `The cert cannot be found it also canot be created`,
+            },
         });
     }
 

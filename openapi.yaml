@@ -48,6 +48,10 @@ paths:
           description: Server tries to aquire the certificate you should try again later
           content:
             html/text: {}
+        '404':
+          description: The cert cannot be found it also canot be created
+          content:
+            html/text: {}
 components:
   schemas:
     Info:
