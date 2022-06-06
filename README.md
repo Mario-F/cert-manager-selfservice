@@ -10,7 +10,7 @@ This project aims to utilize a working cert-manager installation to provide cert
 
 What does cert-manager-selfservice (CMS) offer?
 
-* Just make an http call to get your certificate, example: <http://localhost:8030/cert/your.domain.tld/pem>
+* Just make an http call to get your certificate, example: <http://localhost:8030/api/v1/certificate/your.domain.tld/pem>
 * CMS creates certificates ressources automatically
 * CMS keep track when certificates are accessed
 * CMS cleanup certificates not requested in a time
@@ -29,7 +29,7 @@ Login to the target system that want to use a certificate, create an directory a
 
 ```shell
 mkdir /etc/ssl/selfservice
-wget -O /etc/ssl/selfservice/service.test.example.com.pem http://selfservice.example.com/cert/service.test.example.com/pem
+wget -O /etc/ssl/selfservice/service.test.example.com.pem http://selfservice.example.com/api/v1/certificate/service.test.example.com/pem
 ```
 
 This will request a certificte for domain `service.test.example.com` from selfservice, at the very first request for this domain the file under `/etc/ssl/selfservice/service.test.example.com.pem` will created empty.
@@ -71,7 +71,7 @@ The most simplest usage (for testing) would to run cert-manager-selfservice with
 ./cert-manager-selfservice server --issuer-name your-issuer-to-use
 ```
 
-Then you can request a certificate by calling: `http://localhost:8030/cert/your.domain.tld/pem`
+Then you can request a certificate by calling: `http://localhost:8030/api/v1/certificate/your.domain.tld/pem`
 
 If the certificate not exists a certificate ressource will automatically be created, until there is no valid secret (issued certificate) a HTTP 202 will be returned.
 
