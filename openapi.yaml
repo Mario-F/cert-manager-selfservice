@@ -37,6 +37,18 @@ paths:
           required: true
           schema:
             type: string
+        - name: format
+          in: query
+          description: Format of the result, defaults to json
+          required: false
+          schema:
+            type: string
+            default: json
+            enum:
+              - json
+              - crt
+              - key
+              - ca
       responses:
         '200':
           description: A json object represent the certificate
@@ -44,6 +56,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Certificate'
+            html/text: {}
         '202':
           description: Server tries to aquire the certificate you should try again later
           content:

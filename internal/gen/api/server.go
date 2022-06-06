@@ -15,7 +15,7 @@ import (
 type ServerInterface interface {
 	// Return and eventually create certificate for the given domain
 	// (GET /certificate/{domain})
-	GetCertificateDomain(ctx echo.Context, domain string) error
+	GetCertificateDomain(ctx echo.Context, domain string, params GetCertificateDomainParams) error
 	// Returns information about the cert-manager-selfservice
 	// (GET /info)
 	GetInfo(ctx echo.Context) error
@@ -40,8 +40,17 @@ func (w *ServerInterfaceWrapper) GetCertificateDomain(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter domain: %s", err))
 	}
 
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetCertificateDomainParams
+	// ------------- Optional query parameter "format" -------------
+
+	err = runtime.BindQueryParameter("form", true, false, "format", ctx.QueryParams(), &params.Format)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter format: %s", err))
+	}
+
 	// Invoke the callback with all the unmarshalled arguments
-	err = w.Handler.GetCertificateDomain(ctx, domain)
+	err = w.Handler.GetCertificateDomain(ctx, domain, params)
 	return err
 }
 

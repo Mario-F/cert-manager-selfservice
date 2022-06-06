@@ -65,3 +65,12 @@ type StatusMessage struct {
 // StatusMessageSeverity defines model for StatusMessage.Severity.
 type StatusMessageSeverity string
 
+// GetCertificateDomainParams defines parameters for GetCertificateDomain.
+type GetCertificateDomainParams struct {
+	// Format of the result, defaults to json
+	Format *GetCertificateDomainParamsFormat `json:"format,omitempty"`
+}
+
+// GetCertificateDomainParamsFormat defines parameters for GetCertificateDomain.
+type GetCertificateDomainParamsFormat string
+

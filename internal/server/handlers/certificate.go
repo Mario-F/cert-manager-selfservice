@@ -9,7 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain string) error {
+func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain string, params api.GetCertificateDomainParams) error {
 	res := &api.Certificate{}
 	res.Domain = domain
 
@@ -50,5 +50,15 @@ func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain str
 	res.Crt = string(secretData["tls.crt"])
 	res.Key = string(secretData["tls.key"])
 
-	return ctx.JSON(http.StatusOK, res)
+	log.Debugf("Output format is: %s", *params.Format)
+	switch *params.Format {
+	case "crt":
+		return ctx.HTML(http.StatusOK, res.Crt)
+	case "key":
+		return ctx.HTML(http.StatusOK, res.Key)
+	case "ca":
+		return ctx.HTML(http.StatusOK, res.Authority)
+	default:
+		return ctx.JSON(http.StatusOK, res)
+	}
 }

@@ -89,7 +89,7 @@ func WithRequestEditorFn(fn RequestEditorFn) ClientOption {
 // The interface specification for the client above.
 type ClientInterface interface {
 	// GetCertificateDomain request
-	GetCertificateDomain(ctx context.Context, domain string, reqEditors ...RequestEditorFn) (*http.Response, error)
+	GetCertificateDomain(ctx context.Context, domain string, params *GetCertificateDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error)
 
 	// GetInfo request
 	GetInfo(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
@@ -98,8 +98,8 @@ type ClientInterface interface {
 	GetStatus(ctx context.Context, reqEditors ...RequestEditorFn) (*http.Response, error)
 }
 
-func (c *Client) GetCertificateDomain(ctx context.Context, domain string, reqEditors ...RequestEditorFn) (*http.Response, error) {
-	req, err := NewGetCertificateDomainRequest(c.Server, domain)
+func (c *Client) GetCertificateDomain(ctx context.Context, domain string, params *GetCertificateDomainParams, reqEditors ...RequestEditorFn) (*http.Response, error) {
+	req, err := NewGetCertificateDomainRequest(c.Server, domain, params)
 	if err != nil {
 		return nil, err
 	}
@@ -135,7 +135,7 @@ func (c *Client) GetStatus(ctx context.Context, reqEditors ...RequestEditorFn) (
 }
 
 // NewGetCertificateDomainRequest generates requests for GetCertificateDomain
-func NewGetCertificateDomainRequest(server string, domain string) (*http.Request, error) {
+func NewGetCertificateDomainRequest(server string, domain string, params *GetCertificateDomainParams) (*http.Request, error) {
 	var err error
 
 	var pathParam0 string
@@ -159,6 +159,26 @@ func NewGetCertificateDomainRequest(server string, domain string) (*http.Request
 	if err != nil {
 		return nil, err
 	}
+
+	queryValues := queryURL.Query()
+
+	if params.Format != nil {
+
+		if queryFrag, err := runtime.StyleParamWithLocation("form", true, "format", runtime.ParamLocationQuery, *params.Format); err != nil {
+			return nil, err
+		} else if parsed, err := url.ParseQuery(queryFrag); err != nil {
+			return nil, err
+		} else {
+			for k, v := range parsed {
+				for _, v2 := range v {
+					queryValues.Add(k, v2)
+				}
+			}
+		}
+
+	}
+
+	queryURL.RawQuery = queryValues.Encode()
 
 	req, err := http.NewRequest("GET", queryURL.String(), nil)
 	if err != nil {
@@ -266,7 +286,7 @@ func WithBaseURL(baseURL string) ClientOption {
 // ClientWithResponsesInterface is the interface specification for the client with responses above.
 type ClientWithResponsesInterface interface {
 	// GetCertificateDomain request
-	GetCertificateDomainWithResponse(ctx context.Context, domain string, reqEditors ...RequestEditorFn) (*GetCertificateDomainResponse, error)
+	GetCertificateDomainWithResponse(ctx context.Context, domain string, params *GetCertificateDomainParams, reqEditors ...RequestEditorFn) (*GetCertificateDomainResponse, error)
 
 	// GetInfo request
 	GetInfoWithResponse(ctx context.Context, reqEditors ...RequestEditorFn) (*GetInfoResponse, error)
@@ -342,8 +362,8 @@ func (r GetStatusResponse) StatusCode() int {
 }
 
 // GetCertificateDomainWithResponse request returning *GetCertificateDomainResponse
-func (c *ClientWithResponses) GetCertificateDomainWithResponse(ctx context.Context, domain string, reqEditors ...RequestEditorFn) (*GetCertificateDomainResponse, error) {
-	rsp, err := c.GetCertificateDomain(ctx, domain, reqEditors...)
+func (c *ClientWithResponses) GetCertificateDomainWithResponse(ctx context.Context, domain string, params *GetCertificateDomainParams, reqEditors ...RequestEditorFn) (*GetCertificateDomainResponse, error) {
+	rsp, err := c.GetCertificateDomain(ctx, domain, params, reqEditors...)
 	if err != nil {
 		return nil, err
 	}
@@ -388,6 +408,9 @@ func ParseGetCertificateDomainResponse(rsp *http.Response) (*GetCertificateDomai
 			return nil, err
 		}
 		response.JSON200 = &dest
+
+	case rsp.StatusCode == 200:
+		// Content-type (html/text) unsupported
 
 	}
 
