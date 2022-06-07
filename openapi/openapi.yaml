@@ -63,7 +63,7 @@ paths:
           content:
             html/text: {}
         '404':
-          description: The cert cannot be found it also canot be created
+          description: The cert cannot be found it also cannot be created
           content:
             html/text: {}
 components:
