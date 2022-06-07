@@ -57,7 +57,7 @@ export class DefaultService {
                 'format': format,
             },
             errors: {
-                404: `The cert cannot be found it also canot be created`,
+                404: `The cert cannot be found it also cannot be created`,
             },
         });
     }
