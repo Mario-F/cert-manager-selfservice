@@ -5,10 +5,10 @@ TEST_OPTIONS?=-v
 # Run generators for automatic code generation
 generate:
 	go generate ./...
-	oapi-codegen -generate types -package api openapi.yaml > internal/gen/api/types.go
-	oapi-codegen -generate client -package api openapi.yaml > internal/gen/api/client.go
-	oapi-codegen -generate server -package api openapi.yaml > internal/gen/api/server.go
-	oapi-codegen -generate spec -package api openapi.yaml > internal/gen/api/spec.go
+	oapi-codegen -generate types -package api openapi/openapi.yaml > internal/gen/api/types.go
+	oapi-codegen -generate client -package api openapi/openapi.yaml > internal/gen/api/client.go
+	oapi-codegen -generate server -package api openapi/openapi.yaml > internal/gen/api/server.go
+	oapi-codegen -generate spec -package api openapi/openapi.yaml > internal/gen/api/spec.go
 	cd web && yarn generate && cd ..
 
 # Run all the tests

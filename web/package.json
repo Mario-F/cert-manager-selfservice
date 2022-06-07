@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "generate": "openapi --input ../openapi.yaml --output src/gen/api --client axios",
+    "generate": "openapi --input ../openapi/openapi.yaml --output src/gen/api --client axios",
     "build": "vite build",
     "preview": "vite preview --port 5050",
     "test:unit": "vitest --environment jsdom",
