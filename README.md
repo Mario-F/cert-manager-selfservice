@@ -56,6 +56,7 @@ The API Server and Client are generated using [OpenAPI](./openapi.yaml), generat
 
 The following tools are needed to generate the OpenAPI files:
 
+* SwaggerCLI: `npm install -g swagger-cli`
 * GO: [oapi-codegen](https://github.com/deepmap/oapi-codegen)
 * Typescript: [openapi](https://github.com/openapi/openapi)
 
