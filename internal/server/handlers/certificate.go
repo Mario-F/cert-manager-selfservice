@@ -62,7 +62,7 @@ func (h *OpenAPIV1HandlerImpl) GetCertificateDomain(ctx echo.Context, domain str
 	case "ca":
 		return ctx.HTML(http.StatusOK, res.Authority)
 	case "pem":
-		return ctx.HTML(http.StatusOK, res.Crt+res.Key+res.Authority)
+		return ctx.HTML(http.StatusOK, res.Crt+res.Authority)
 	case "json":
 		return ctx.JSON(http.StatusOK, res)
 	default:
