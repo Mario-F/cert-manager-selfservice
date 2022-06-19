@@ -58,7 +58,7 @@ func GetCertificates() ([]KubeCertificate, error) {
 	log.Debugf("Get all cert-manager-selfservice managed certificates with ID: %s", managerId)
 	result := []KubeCertificate{}
 
-	client, err := getClient("")
+	client, err := getClient()
 	if err != nil {
 		return result, err
 	}
@@ -104,7 +104,7 @@ func GetCertificates() ([]KubeCertificate, error) {
 func (k KubeCertificate) updateAccess() error {
 	log.Debugf("Update lastAccess time for %s", k.Certificate.Name)
 
-	client, err := getClient("")
+	client, err := getClient()
 	if err != nil {
 		return err
 	}
@@ -122,7 +122,7 @@ func (k KubeCertificate) updateAccess() error {
 func (k KubeCertificate) Delete() error {
 	log.Debugf("Delete certificate %s", k.Certificate.Name)
 
-	client, err := getClient("")
+	client, err := getClient()
 	if err != nil {
 		return err
 	}
@@ -191,7 +191,7 @@ func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 	log.Infof("Create certificate for domain %s", domain)
 	domainSlug := strings.ReplaceAll(domain, ".", "-")
 
-	client, err := getClient("")
+	client, err := getClient()
 	if err != nil {
 		return err
 	}

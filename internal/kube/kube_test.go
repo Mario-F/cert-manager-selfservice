@@ -11,7 +11,7 @@ import (
 func TestKubeClientConfig(t *testing.T) {
 	log.SetLevel(log.DebugLevel)
 	t.Run("Test creating kube client", func(t *testing.T) {
-		_, err := getClient("")
+		_, err := getClient()
 		if err != nil {
 			t.Log("Kube client error but ok in pipeline test")
 		} else {
@@ -20,7 +20,7 @@ func TestKubeClientConfig(t *testing.T) {
 	})
 
 	t.Run("Test get certificates", func(t *testing.T) {
-		client, err := getClient("")
+		client, err := getClient()
 		if err != nil {
 			t.Log("Kube client error but ok in pipeline test")
 			return

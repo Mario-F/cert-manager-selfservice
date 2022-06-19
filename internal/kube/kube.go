@@ -24,6 +24,7 @@ type KubeClients struct {
 }
 
 var (
+	kubeConfigPath    string
 	fetchedClients    KubeClients
 	fetchLock         sync.Mutex
 	kubeNamespace     string
@@ -34,12 +35,16 @@ func init() {
 	promKubeApiAccess = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_kube_api_access_total", Help: "Count the number of kubernetes api calls"})
 }
 
+func SetKubeConfigPath(path string) {
+	kubeConfigPath = path
+}
+
 func SetNamespace(kubens string) {
 	log.Infof("Setting kubernetes namespace to %s", kubens)
 	kubeNamespace = kubens
 }
 
-func getClient(kubeConfigPath string) (KubeClients, error) {
+func getClient() (KubeClients, error) {
 	log.Debug("Get kube client by trying ClusterConfig")
 	promKubeApiAccess.Inc()
 
@@ -108,6 +113,6 @@ func getClient(kubeConfigPath string) (KubeClients, error) {
 }
 
 func CheckKubernetes() error {
-	_, err := getClient("")
+	_, err := getClient()
 	return err
 }
