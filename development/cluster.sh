@@ -6,6 +6,11 @@ HOST_KUBECONFIG=${HOST_KUBECONFIG:-/tmp/cms-kubeconfig}
 
 ARG_COMMAND=${1:-}
 
+# check requirements
+command -v docker >/dev/null 2>&1 || { echo >&2 "docker is required but not installed.  Aborting."; exit 1; }
+command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl is required but not installed.  Aborting."; exit 1; }
+command -v helm >/dev/null 2>&1 || { echo >&2 "helm is required but not installed.  Aborting."; exit 1; }
+
 # switch case for the command
 case $ARG_COMMAND in
   "start")
