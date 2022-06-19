@@ -67,6 +67,8 @@ case $ARG_COMMAND in
     fi
     echo "cluster-issuer is installed"
 
+    kubectl --kubeconfig=$HOST_KUBECONFIG create namespace cms
+
     echo ""
     echo "use kubeconfig from host with:"
     echo "export KUBECONFIG=${HOST_KUBECONFIG}"
