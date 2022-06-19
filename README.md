@@ -50,6 +50,8 @@ If you run it in a cronjob the certificate will automatically renewed regullary.
 
 At the moment you need a working kubernetes cluster with cert-manager to get started in development.
 
+Check out the [development](./development/) for more advanced usage.
+
 ### OpenAPI
 
 The API Server and Client are generated using [OpenAPI](./openapi.yaml), generation can be done with `make generate`.
