@@ -2,7 +2,9 @@
 # Spin up a kubernetes cluster with docker and install cert-manager with self signing certs
 
 K3S_VERSION=${K3S_VERSION:-v1.22.10-k3s1}
+CERT_MANAGER_VERSION=${CERT_MANAGER_VERSION:-v1.8.1}
 HOST_KUBECONFIG=${HOST_KUBECONFIG:-/tmp/cms-kubeconfig}
+BASEDIR=$(dirname "$0")
 
 ARG_COMMAND=${1:-}
 
@@ -39,6 +41,33 @@ case $ARG_COMMAND in
     echo "copy kubeconfig to host..."
     docker cp cms-k3s:/tmp/kubeconfig $HOST_KUBECONFIG
 
+    # install cert-manager
+    echo "install cert-manager..."
+    helm install \
+      --wait \
+      --kubeconfig $HOST_KUBECONFIG \
+      --repo https://charts.jetstack.io \
+      --namespace cert-manager \
+      --create-namespace \
+      --version $CERT_MANAGER_VERSION \
+      --values ${BASEDIR}/cluster/cert-manager.values.yaml \
+      cert-manager cert-manager
+    if [ $? -ne 0 ]; then
+      echo "failed to install cert-manager, please check error message"
+      exit 1
+    fi
+    echo "cert-manager is installed"
+    echo "install cluster-issuer..."
+    kubectl --kubeconfig=$HOST_KUBECONFIG \
+      --namespace cert-manager \
+      apply -f ${BASEDIR}/cluster/cluster-issuer.yaml
+    if [ $? -ne 0 ]; then
+      echo "failed to install cluster issuer, please check error message"
+      exit 1
+    fi
+    echo "cluster-issuer is installed"
+
+    echo ""
     echo "use kubeconfig from host with:"
     echo "export KUBECONFIG=${HOST_KUBECONFIG}"
     ;;
