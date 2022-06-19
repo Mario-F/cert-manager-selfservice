@@ -12,3 +12,9 @@ Requirements on host:
 * docker
 * kubectl
 * helm
+
+Start with `./development/cluster.sh start`
+
+Develop with `./debug server --kubeconfig /tmp/cms-kubeconfig --kube-namespace cms --issuer-name cms-development-cluster-issuer`
+
+Stop with `./development/cluster.sh stop`
