@@ -1,6 +1,7 @@
 package kube
 
 import (
+	"os"
 	"path/filepath"
 	"sync"
 
@@ -60,7 +61,11 @@ func getClient() (KubeClients, error) {
 
 	// Try get config from passed filepath
 	if kubeConfigPath == "" {
-		kubeConfigPath = filepath.Join(homedir.HomeDir(), ".kube", "config")
+		// check if env variable KUBECONFIG is set
+		if kubeConfigPath = os.Getenv("KUBECONFIG"); kubeConfigPath == "" {
+			// if not set, try to get config from home directory
+			kubeConfigPath = filepath.Join(homedir.HomeDir(), ".kube", "config")
+		}
 	}
 	log.Debugf("Kubeconfig path is set to: %s", kubeConfigPath)
 
