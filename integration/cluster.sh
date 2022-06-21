@@ -36,7 +36,7 @@ case $ARG_COMMAND in
     K3S_READY=1
     while [ $K3S_READY -ne 0 ]; do
       sleep 1
-      docker exec -it cms-k3s kubectl get nodes &> /dev/null
+      docker exec -i cms-k3s kubectl get nodes &> /dev/null
       K3S_READY=$?
     done
     echo "k3s is ready"
