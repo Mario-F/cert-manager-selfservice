@@ -35,14 +35,14 @@ case $ARG_COMMAND in
     echo "wait for k3s to be ready..."
     K3S_READY=1
     while [ $K3S_READY -ne 0 ]; do
-      sleep 1
+      sleep 2
+      sh -c 'docker exec -it cms-k3s kubectl get nodes | grep Ready'
+      K3S_READY=$?
       if [ $DEBUG = true ]; then
+        echo "exit code: $K3S_READY"
         docker exec -i cms-k3s kubectl get nodes
       fi
-      docker exec -i cms-k3s kubectl get nodes &> /dev/null
-      K3S_READY=$?
     done
-    sleep 1
     echo "k3s is ready"
     if [ $DEBUG = true ]; then
       docker ps
