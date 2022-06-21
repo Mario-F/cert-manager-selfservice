@@ -1,0 +1,27 @@
+name: testing
+
+on: push
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        k3s:
+          - 'v1.22.10-k3s1'
+        cert-manager-chart:
+          - 'v1.8.1'
+    name: k3s ${{ matrix.k3s }}, cert-manager-chart ${{ matrix.cert-manager-chart }}
+    env:
+      K3S_VERSION: ${{ matrix.k3s }}
+      CERT_MANAGER_CHART_VERSION: ${{ matrix.cert-manager-chart }}
+    steps:
+      - uses: actions/checkout@v2
+
+      - run: ./integration/cluster.sh start
+
+      - run: "echo 'TODO: create integrations tests'"
+
+      - run: ./integration/cluster.sh stop
+
+
