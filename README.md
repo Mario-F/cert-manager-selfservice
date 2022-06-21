@@ -50,7 +50,7 @@ If you run it in a cronjob the certificate will automatically renewed regullary.
 
 At the moment you need a working kubernetes cluster with cert-manager to get started in development.
 
-Check out the [development](./development/) for more advanced usage.
+Check out [integration](./integration/) for creating cluster in place.
 
 ### OpenAPI
 

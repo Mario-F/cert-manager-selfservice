@@ -1,6 +1,6 @@
-# Development
+# Integration
 
-This folder will contain all the files that are needed for advanced development and testing but not mendatory to use.
+This folder will contain all the files that are needed for an full integration test.
 
 ## Cluster
 
@@ -13,8 +13,8 @@ Requirements on host:
 * kubectl
 * helm
 
-Start with `./development/cluster.sh start`
+Start with `./integration/cluster.sh start`
 
 Develop with `./debug server --kubeconfig /tmp/cms-kubeconfig --kube-namespace cms --issuer-name cms-development-cluster-issuer`
 
-Stop with `./development/cluster.sh stop`
+Stop with `./integration/cluster.sh stop`
