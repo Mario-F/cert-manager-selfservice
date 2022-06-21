@@ -36,7 +36,7 @@ case $ARG_COMMAND in
     K3S_READY=1
     while [ $K3S_READY -ne 0 ]; do
       sleep 2
-      sh -c 'docker exec -it cms-k3s kubectl get nodes | grep Ready'
+      docker exec -it cms-k3s kubectl get nodes | grep Ready
       K3S_READY=$?
       if [ $DEBUG = true ]; then
         echo "exit code: $K3S_READY"
