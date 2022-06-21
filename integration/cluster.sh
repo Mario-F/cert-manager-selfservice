@@ -5,6 +5,7 @@ K3S_VERSION=${K3S_VERSION:-v1.22.10-k3s1}
 CERT_MANAGER_VERSION=${CERT_MANAGER_VERSION:-v1.8.1}
 HOST_KUBECONFIG=${HOST_KUBECONFIG:-/tmp/cms-kubeconfig}
 BASEDIR=$(dirname "$0")
+DEBUG=${DEBUG:-false}
 
 ARG_COMMAND=${1:-}
 
@@ -26,6 +27,9 @@ case $ARG_COMMAND in
       echo "failed to start k3s in docker, please check error message"
       exit 1
     fi
+    if [ $DEBUG = true ]; then
+      docker ps
+    fi
 
     # wait for k3s to be ready
     echo "wait for k3s to be ready..."
@@ -36,6 +40,9 @@ case $ARG_COMMAND in
       K3S_READY=$?
     done
     echo "k3s is ready"
+    if [ $DEBUG = true ]; then
+      docker ps
+    fi
 
     # copy kubeconfig to host
     echo "copy kubeconfig to host..."

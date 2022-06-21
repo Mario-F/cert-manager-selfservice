@@ -3,7 +3,7 @@ name: integration
 on: push
 
 jobs:
-  test:
+  integration:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
@@ -19,6 +19,7 @@ jobs:
           - 'v1.8.1'
     name: k3s ${{ matrix.k3s }}, cert-manager-chart ${{ matrix.cert-manager-chart }}
     env:
+      DEBUG: true
       K3S_VERSION: ${{ matrix.k3s }}
       CERT_MANAGER_VERSION: ${{ matrix.cert-manager-chart }}
     steps:
