@@ -68,6 +68,7 @@ case $ARG_COMMAND in
       exit 1
     fi
     echo "cert-manager is installed"
+    sleep 2 # webhook possible not started yet
     echo "install cluster-issuer..."
     kubectl --kubeconfig=$HOST_KUBECONFIG \
       --namespace cert-manager \
