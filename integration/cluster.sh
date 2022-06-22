@@ -83,7 +83,7 @@ case $ARG_COMMAND in
 
     # check clusterissuer
     echo "check clusterissuer..."
-    kubectl --kubeconfig=$HOST_KUBECONFIG get cms-development-cluster-issuer
+    kubectl --kubeconfig=$HOST_KUBECONFIG get clusterissuer cms-development-cluster-issuer
     if [ $? -ne 0 ]; then
       echo "failed to get cluster issuer, please check error message"
       exit 1
