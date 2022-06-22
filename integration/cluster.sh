@@ -81,6 +81,14 @@ case $ARG_COMMAND in
 
     kubectl --kubeconfig=$HOST_KUBECONFIG create namespace cms
 
+    # check clusterissuer
+    echo "check clusterissuer..."
+    kubectl --kubeconfig=$HOST_KUBECONFIG get cms-development-cluster-issuer
+    if [ $? -ne 0 ]; then
+      echo "failed to get cluster issuer, please check error message"
+      exit 1
+    fi
+
     echo ""
     echo "use kubeconfig from host with:"
     echo "export KUBECONFIG=${HOST_KUBECONFIG}"
