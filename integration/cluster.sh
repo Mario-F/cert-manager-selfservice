@@ -89,6 +89,26 @@ case $ARG_COMMAND in
       exit 1
     fi
 
+    # test with test certificate
+    echo "test with test certificate..."
+    kubectl --kubeconfig=$HOST_KUBECONFIG -n cms apply -f ${BASEDIR}/cluster/test-certificate.yaml
+    if [ $? -ne 0 ]; then
+      echo "failed to apply test certificate, please check error message"
+      exit 1
+    fi
+    # pull till test-certificate is valid
+    TESTCERT_READY=1
+    while [ $TESTCERT_READY -ne 0 ]; do
+      sleep 1
+      kubectl --kubeconfig=$HOST_KUBECONFIG -n cms get certificate test-certificate | grep True
+      TESTCERT_READY=$?
+      if [ $DEBUG = true ]; then
+        echo "exit code: $TESTCERT_READY"
+        kubectl --kubeconfig=$HOST_KUBECONFIG -n cms get certificate test-certificate
+      fi
+    done
+    echo "test-certificate is valid"
+
     echo ""
     echo "use kubeconfig from host with:"
     echo "export KUBECONFIG=${HOST_KUBECONFIG}"
