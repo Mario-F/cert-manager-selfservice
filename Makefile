@@ -27,4 +27,5 @@ godry:
 
 # Run a build process
 build:
-	go build -o ./build/server ./cmd/app/*.go
+	cd web && yarn && yarn build && cd ..
+	go build -o ./build/server ./main.go
