@@ -40,6 +40,8 @@ func (w *ServerInterfaceWrapper) GetCertificateDomain(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter domain: %s", err))
 	}
 
+	ctx.Set(BasicAuthScopes, []string{""})
+
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetCertificateDomainParams
 	// ------------- Optional query parameter "format" -------------

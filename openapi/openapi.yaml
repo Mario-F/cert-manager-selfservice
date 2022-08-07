@@ -31,6 +31,8 @@ paths:
   /certificate/{domain}:
     get:
       summary: Return and eventually create certificate for the given domain
+      security:
+        - basicAuth: []
       parameters:
         - name: domain
           in: path
@@ -68,5 +70,9 @@ paths:
           content:
             html/text: {}
 components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
   schemas:
     $ref: './schemas/_index.yaml'

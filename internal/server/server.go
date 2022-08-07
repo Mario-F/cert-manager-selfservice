@@ -11,6 +11,7 @@ import (
 	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
 	"github.com/Mario-F/cert-manager-selfservice/internal/server/handlers"
 	oapimiddleware "github.com/deepmap/oapi-codegen/pkg/middleware"
+	"github.com/getkin/kin-openapi/openapi3filter"
 	echoPrometheus "github.com/globocom/echo-prometheus"
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
@@ -54,7 +55,13 @@ func Start(port int, issuerKind string, issuerName string) {
 		return ctx.JSON(http.StatusOK, swagger)
 	})
 	OpenapiHandlerImpl := &handlers.OpenAPIV1HandlerImpl{}
-	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidator(swagger))
+	validatorOptions := &oapimiddleware.Options{}
+	validatorOptions.Options.AuthenticationFunc = func(c context.Context, input *openapi3filter.AuthenticationInput) error {
+		// TODO: implement authentication
+		log.Infof("Authenticating called with %s but not implemented at the moment", input.SecuritySchemeName)
+		return nil
+	}
+	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidatorWithOptions(swagger, validatorOptions))
 	kube.IssuerRef = issuerRef
 	api.RegisterHandlers(apiGroup, OpenapiHandlerImpl)
 
