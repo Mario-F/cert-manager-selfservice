@@ -2,5 +2,5 @@
 #
 # Start debugging backend
 #
-DEBUG_PORT=${DEBUG_PORT:-8345}
+DEBUG_PORT=${DEBUG_PORT:-8355}
 dlv debug --listen=:${DEBUG_PORT} --headless --log --api-version=2 -- "$@"
