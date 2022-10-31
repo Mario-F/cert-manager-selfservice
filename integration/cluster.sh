@@ -2,7 +2,7 @@
 # Spin up a kubernetes cluster with docker and install cert-manager with self signing certs
 
 K3S_VERSION=${K3S_VERSION:-v1.24.7-k3s1}
-CERT_MANAGER_VERSION=${CERT_MANAGER_VERSION:-v1.9.1}
+CERT_MANAGER_VERSION=${CERT_MANAGER_VERSION:-v1.10.0}
 HOST_KUBECONFIG=${HOST_KUBECONFIG:-/tmp/cms-kubeconfig}
 BASEDIR=$(dirname "$0")
 DEBUG=${DEBUG:-false}
