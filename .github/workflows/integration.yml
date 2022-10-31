@@ -29,5 +29,3 @@ jobs:
       - run: "echo 'TODO: create integrations tests'"
 
       - run: ./integration/cluster.sh stop
-
-
