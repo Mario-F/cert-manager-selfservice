@@ -37,6 +37,9 @@ type Certificate struct {
 
 // Info defines model for Info.
 type Info struct {
+	// Whether basic auth is enabled
+	BasicAuth bool `json:"basicAuth"`
+
 	// The version of the cert-manager-selfservice
 	Version string `json:"version"`
 }

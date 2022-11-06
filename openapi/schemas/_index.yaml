@@ -3,10 +3,14 @@ Info:
   type: object
   required:
     - version
+    - basicAuth
   properties:
     version:
       description: The version of the cert-manager-selfservice
       type: string
+    basicAuth:
+      description: Whether basic auth is enabled
+      type: boolean
 Status:
   type: object
   properties:
