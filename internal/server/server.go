@@ -25,7 +25,7 @@ var (
 )
 
 // Start is the entrypoint for starting the webserver
-func Start(port int, issuerKind string, issuerName string) {
+func Start(port int, issuerKind string, issuerName string, authUsername string, authPassword string) {
 	log.Infof("Starting webserver with IssuerKind: %s and IssuerName: %s", issuerKind, issuerName)
 	issuerRef := cmmeta.ObjectReference{
 		Name: issuerName,
@@ -57,8 +57,20 @@ func Start(port int, issuerKind string, issuerName string) {
 	OpenapiHandlerImpl := &handlers.OpenAPIV1HandlerImpl{}
 	validatorOptions := &oapimiddleware.Options{}
 	validatorOptions.Options.AuthenticationFunc = func(c context.Context, input *openapi3filter.AuthenticationInput) error {
-		// TODO: implement authentication
 		log.Infof("Authenticating called with %s but not implemented at the moment", input.SecuritySchemeName)
+
+		// Validate if authUsername and authPassword is set
+		if input.SecuritySchemeName == "basicAuth" && (authUsername != "" || authPassword != "") {
+			username, password, ok := input.RequestValidationInput.Request.BasicAuth()
+			if !ok || username != authUsername || password != authPassword {
+				log.Errorf("Auth failed for user %s", username)
+				return fmt.Errorf("invalid credentials")
+			}
+			log.Debugf("Auth successful for user %s", username)
+			return nil
+		}
+
+		// If no validation method activated all credentials work
 		return nil
 	}
 	apiGroup := e.Group("/api/v1", oapimiddleware.OapiRequestValidatorWithOptions(swagger, validatorOptions))

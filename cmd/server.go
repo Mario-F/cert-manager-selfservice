@@ -41,6 +41,8 @@ var (
 	kubeNamespace string
 	issuerKind    string
 	issuerName    string
+	authUsername  string
+	authPassword  string
 	cleanupHours  int64
 	noCleanup     bool
 )
@@ -70,7 +72,7 @@ var serverCmd = &cobra.Command{
 		}
 
 		go server.StartMetricsExporter(metricsPort)
-		go server.Start(serverPort, issuerKind, issuerName)
+		go server.Start(serverPort, issuerKind, issuerName, authUsername, authPassword)
 
 		quit := make(chan os.Signal, 1)
 		signal.Notify(quit, os.Interrupt)
@@ -94,6 +96,8 @@ func init() {
 	serverCmd.Flags().StringVar(&kubeNamespace, "kube-namespace", "default", "Kubernetes namespace to use")
 	serverCmd.Flags().StringVar(&issuerKind, "issuer-kind", "ClusterIssuer", "Cert Manager issuer to use")
 	serverCmd.Flags().StringVar(&issuerName, "issuer-name", "", "Cert Manager issuer instance to use")
+	serverCmd.Flags().StringVar(&authUsername, "auth-username", "", "Basic auth username for the api")
+	serverCmd.Flags().StringVar(&authPassword, "auth-password", "", "Basic auth password for the api")
 	serverCmd.Flags().Int64Var(&cleanupHours, "cleanup-hours", 72, "Cleanup certificates not accessed after hours")
 	serverCmd.Flags().BoolVar(&noCleanup, "no-cleanup", false, "Disable cleanup of unused certificates")
 	err := serverCmd.MarkFlagRequired("issuer-name")
