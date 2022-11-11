@@ -11,6 +11,7 @@ import (
 func (h *OpenAPIV1HandlerImpl) GetInfo(ctx echo.Context) error {
 	res := &api.Info{}
 	res.Version = config.Version
-	// TODO: Implement basicAuth flag
+	basicAuthActive, _, _ := config.GetBasicAuth()
+	res.BasicAuth = basicAuthActive
 	return ctx.JSON(http.StatusOK, res)
 }
