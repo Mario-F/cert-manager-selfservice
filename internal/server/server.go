@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/Mario-F/cert-manager-selfservice/internal/config"
 	"github.com/Mario-F/cert-manager-selfservice/internal/gen/api"
 	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
 	"github.com/Mario-F/cert-manager-selfservice/internal/server/handlers"
@@ -25,7 +26,7 @@ var (
 )
 
 // Start is the entrypoint for starting the webserver
-func Start(port int, issuerKind string, issuerName string, authUsername string, authPassword string) {
+func Start(port int, issuerKind string, issuerName string) {
 	log.Infof("Starting webserver with IssuerKind: %s and IssuerName: %s", issuerKind, issuerName)
 	issuerRef := cmmeta.ObjectReference{
 		Name: issuerName,
@@ -60,7 +61,8 @@ func Start(port int, issuerKind string, issuerName string, authUsername string, 
 		log.Infof("Authenticating called with %s but not implemented at the moment", input.SecuritySchemeName)
 
 		// Validate if authUsername and authPassword is set
-		if input.SecuritySchemeName == "basicAuth" && (authUsername != "" || authPassword != "") {
+		authActive, authUsername, authPassword := config.GetBasicAuth()
+		if input.SecuritySchemeName == "basicAuth" && authActive {
 			username, password, ok := input.RequestValidationInput.Request.BasicAuth()
 			if !ok || username != authUsername || password != authPassword {
 				log.Errorf("Auth failed for user %s", username)

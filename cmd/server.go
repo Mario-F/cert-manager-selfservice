@@ -27,6 +27,7 @@ import (
 	"syscall"
 
 	"github.com/Mario-F/cert-manager-selfservice/internal/cleaner"
+	"github.com/Mario-F/cert-manager-selfservice/internal/config"
 	"github.com/Mario-F/cert-manager-selfservice/internal/kube"
 	"github.com/Mario-F/cert-manager-selfservice/internal/server"
 	log "github.com/sirupsen/logrus"
@@ -71,8 +72,12 @@ var serverCmd = &cobra.Command{
 			}
 		}
 
+		if authUsername != "" && authPassword != "" {
+			config.SetBasicAuth(authUsername, authPassword)
+		}
+
 		go server.StartMetricsExporter(metricsPort)
-		go server.Start(serverPort, issuerKind, issuerName, authUsername, authPassword)
+		go server.Start(serverPort, issuerKind, issuerName)
 
 		quit := make(chan os.Signal, 1)
 		signal.Notify(quit, os.Interrupt)
