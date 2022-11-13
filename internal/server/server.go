@@ -66,6 +66,7 @@ func Start(port int, issuerKind string, issuerName string) {
 			username, password, ok := input.RequestValidationInput.Request.BasicAuth()
 			if !ok || username != authUsername || password != authPassword {
 				log.Errorf("Auth failed for user %s", username)
+        // TODO: Add prometheus metrics for failed auth
 				return fmt.Errorf("invalid credentials")
 			}
 			log.Debugf("Auth successful for user %s", username)
