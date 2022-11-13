@@ -73,6 +73,7 @@ var serverCmd = &cobra.Command{
 		}
 
 		if authUsername != "" && authPassword != "" {
+			log.Infof("Basic auth with user %s is activated", authUsername)
 			config.SetBasicAuth(authUsername, authPassword)
 		}
 
