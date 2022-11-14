@@ -17,13 +17,20 @@ import (
 	cmmeta "github.com/jetstack/cert-manager/pkg/apis/meta/v1"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 	log "github.com/sirupsen/logrus"
 )
 
 var (
-	e             *echo.Echo
-	EmbededStatic *embed.FS
+	e                     *echo.Echo
+	EmbededStatic         *embed.FS
+	promAuthFailedCounter prometheus.Counter
 )
+
+func init() {
+	promAuthFailedCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_auth_failed_total", Help: "Count of failed auth attempts"})
+}
 
 // Start is the entrypoint for starting the webserver
 func Start(port int, issuerKind string, issuerName string) {
@@ -66,7 +73,7 @@ func Start(port int, issuerKind string, issuerName string) {
 			username, password, ok := input.RequestValidationInput.Request.BasicAuth()
 			if !ok || username != authUsername || password != authPassword {
 				log.Errorf("Auth failed for user %s", username)
-        // TODO: Add prometheus metrics for failed auth
+				promAuthFailedCounter.Inc()
 				return fmt.Errorf("invalid credentials")
 			}
 			log.Debugf("Auth successful for user %s", username)
