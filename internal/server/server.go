@@ -23,13 +23,15 @@ import (
 )
 
 var (
-	e                     *echo.Echo
-	EmbededStatic         *embed.FS
-	promAuthFailedCounter prometheus.Counter
+	e                      *echo.Echo
+	EmbededStatic          *embed.FS
+	promAuthFailedCounter  prometheus.Counter
+	promAuthSuccessCounter prometheus.Counter
 )
 
 func init() {
 	promAuthFailedCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_auth_failed_total", Help: "Count of failed auth attempts"})
+	promAuthSuccessCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_auth_success_total", Help: "Count of successful auth attempts"})
 }
 
 // Start is the entrypoint for starting the webserver
@@ -77,6 +79,7 @@ func Start(port int, issuerKind string, issuerName string) {
 				return fmt.Errorf("invalid credentials")
 			}
 			log.Debugf("Auth successful for user %s", username)
+			promAuthSuccessCounter.Inc()
 			return nil
 		}
 
