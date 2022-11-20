@@ -11,7 +11,9 @@ import (
 )
 
 var (
-	promCleanupCalledCounter prometheus.Counter
+	promCleanupCalledCounter                 prometheus.Counter
+	promCleanupCertificateDeleteErrorCounter prometheus.Counter
+	promCleanupCertificateExpiredCounter     prometheus.Counter
 )
 
 type Cleaner struct {
@@ -23,6 +25,8 @@ type Cleaner struct {
 
 func init() {
 	promCleanupCalledCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_cleanup_total", Help: "Count of cleanup routines executed"})
+	promCleanupCertificateDeleteErrorCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_cleanup_certificate_delete_error_total", Help: "Count of errors deleting certificates"})
+	promCleanupCertificateExpiredCounter = promauto.NewCounter(prometheus.CounterOpts{Name: "cms_cleanup_certificate_expired_total", Help: "Count of certificates deleted because of expiration"})
 }
 
 func (c *Cleaner) Start(hours int64) error {
@@ -84,9 +88,9 @@ func (c *Cleaner) run() error {
 			err := cert.Delete()
 			if err != nil {
 				log.Errorf("Error deleting certificate %s: %v+", cert.Certificate.Name, err)
-				// TODO: Add prom metrics (certificate delete error)
+				promCleanupCertificateDeleteErrorCounter.Inc()
 			}
-			// TODO: Add prom metrics (certificate expired count)
+			promCleanupCertificateExpiredCounter.Inc()
 		}
 	}
 
