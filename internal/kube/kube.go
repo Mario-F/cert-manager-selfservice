@@ -68,6 +68,8 @@ func getClient() (KubeClients, error) {
 		}
 	}
 	log.Debugf("Kubeconfig path is set to: %s", kubeConfigPath)
+	// Set KUBECONFIG path env variable as workaround for k8s-discovery
+	os.Setenv("KUBECONFIG", kubeConfigPath)
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
 	if err != nil {
