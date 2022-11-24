@@ -52,6 +52,32 @@ At the moment you need a working kubernetes cluster with cert-manager to get sta
 
 Check out [integration](./integration/) for creating cluster in place.
 
+### Quickstart
+
+Just execute the following commands in project root to start development (docker, npm and go are required):
+
+```shell
+# Install dependencies
+npm install -g swagger-cli yarn
+go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest
+
+# Build web project
+cd web
+yarn
+yarn build
+cd ..
+
+# Deploy a local kubernetes with cert-manager and cluster issuer for testing
+./integration/cluster.sh start
+
+# Start development of server
+./debug --debug server --kubeconfig=/tmp/cms-kubeconfig --issuer-name=cms-development-cluster-issuer --kube-namespace=cms
+
+# Optional: Start development of web and use it as accesspoint
+cd web
+yarn dev
+```
+
 ### OpenAPI
 
 The API Server and Client are generated using [OpenAPI](./openapi.yaml), generation can be done with `make generate`.
