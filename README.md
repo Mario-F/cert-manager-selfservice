@@ -70,7 +70,7 @@ cd ..
 # Deploy a local kubernetes with cert-manager and cluster issuer for testing
 ./integration/cluster.sh start
 
-# Start development of server
+# Start development of server, the debugger is waiting press F5 in vscode to attach
 ./debug --debug server --kubeconfig=/tmp/cms-kubeconfig --issuer-name=cms-development-cluster-issuer --kube-namespace=cms
 
 # Optional: Start development of web and use it as accesspoint
