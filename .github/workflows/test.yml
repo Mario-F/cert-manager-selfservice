@@ -8,8 +8,8 @@ jobs:
     strategy:
       matrix:
         node:
-          - '16'
-          - '17'
+          - '18'
+          - '19'
         go:
           - '1.18'
     name: Go ${{ matrix.go }}, Node ${{ matrix.node }}

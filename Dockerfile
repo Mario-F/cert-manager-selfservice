@@ -3,7 +3,7 @@
 ##
 ## Build Web
 ##
-FROM node:16 AS build-web
+FROM node:18 AS build-web
 
 WORKDIR /app
 
