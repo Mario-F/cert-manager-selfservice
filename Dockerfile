@@ -9,7 +9,8 @@ WORKDIR /app
 
 COPY ./web/package.json ./package.json
 COPY ./web/yarn.lock ./yarn.lock
-RUN yarn
+# Workaround: slow github actions network
+RUN yarn --network-timeout 600000
 COPY ./web ./
 RUN yarn build
 
