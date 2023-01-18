@@ -72,6 +72,7 @@ cd ..
 
 # Start development of server, the debugger is waiting press F5 in vscode to attach
 ./debug --debug server --kubeconfig=/tmp/cms-kubeconfig --issuer-name=cms-development-cluster-issuer --kube-namespace=cms
+# Hit F5 in vscode to attach
 
 # Optional: Start development of web and use it as accesspoint
 cd web
