@@ -11,8 +11,8 @@ jobs:
           - 'v1.23.15-k3s1'
           - 'v1.24.9-k3s1'
         cert-manager-chart:
-          - 'v1.9.1'
-          - 'v1.10.0'
+          - 'v1.10.2'
+          - 'v1.11.0'
     name: k3s ${{ matrix.k3s }}, cert-manager-chart ${{ matrix.cert-manager-chart }}
     env:
       DEBUG: true
