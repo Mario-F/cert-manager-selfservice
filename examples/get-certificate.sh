@@ -16,7 +16,7 @@ usage () {
 if [ -z "${API}" ]; then usage; fi
 if [ -z "${DOMAIN}" ]; then usage; fi
 
-REQUEST_URL="${API}/cert/${DOMAIN}/${TYPE}"
+REQUEST_URL="${API}/api/v1/certificate/${DOMAIN}?format=${TYPE}"
 TMP_FILE="/tmp/${DOMAIN}.${TYPE}"
 TARGET_FOLDER="/etc/ssl/selfservice"
 TARGET_FILE="${TARGET_FOLDER}/${DOMAIN}.${TYPE}"
