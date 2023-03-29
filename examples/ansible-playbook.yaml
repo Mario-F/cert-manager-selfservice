@@ -1,0 +1,38 @@
+---
+- name: Cert Manager Selfservice
+  hosts: cms
+
+  vars:
+    cms_api: https://cms.api.example.com
+    cms_user: CERTSERVICE_USER
+    cms_pass: CERTSERVICE_PASS
+    cms_path: /etc/ssl/cert-manager-selfservice
+
+  tasks:
+    - name: Install helper script
+      ansible.builtin.copy:
+        src: cms/cert-manager-selfservice.sh
+        dest: /usr/local/bin/cert-manager-selfservice.sh
+        mode: 0755
+
+    - name: create directory to store certificates
+      ansible.builtin.file:
+        path: "{{ cms_path }}"
+        state: directory
+        mode: 0755
+
+    - name: Create cronjobs for certificates updates
+      ansible.builtin.copy:
+        dest: /etc/cron.d/cert-manager-selfservice
+        owner: root
+        group: root
+        mode: 0600
+        content: |
+          # Managed by Ansible!
+
+          {% for cert in certificates %}
+          # {{ cert }}
+          {{ (59 |random(seed=cert)) }} 9 * * * root /usr/local/bin/cert-manager-selfservice.sh {{ cms_api }} {{ cms_user }} {{ cms_pass }} {{ cert }} {{ cms_path }}/{{ cert }}.pem pem
+          {{ (59 |random(seed=cert)) }} 9 * * * root /usr/local/bin/cert-manager-selfservice.sh {{ cms_api }} {{ cms_user }} {{ cms_pass }} {{ cert }} {{ cms_path }}/{{ cert }}.key key
+
+          {% endfor %}
