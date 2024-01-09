@@ -60,6 +60,7 @@ Just execute the following commands in project root to start development (docker
 # Install dependencies
 npm install -g swagger-cli yarn
 go install github.com/deepmap/oapi-codegen/cmd/oapi-codegen@latest
+go install github.com/go-delve/delve/cmd/dlv@latest
 
 # Build web project
 cd web
