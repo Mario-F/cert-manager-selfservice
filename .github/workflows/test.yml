@@ -10,9 +10,11 @@ jobs:
         node:
           - '18'
           - '19'
+          - '20'
         go:
           - '1.18'
           - '1.19'
+          - '1.20'
     name: Go ${{ matrix.go }}, Node ${{ matrix.node }}
     steps:
       - uses: actions/checkout@v2
