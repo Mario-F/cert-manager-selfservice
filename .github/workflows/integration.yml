@@ -8,10 +8,9 @@ jobs:
     strategy:
       matrix:
         k3s:
-          - 'v1.23.15-k3s1'
           - 'v1.24.9-k3s1'
+          - 'v1.25.16-k3s4'
         cert-manager-chart:
-          - 'v1.11.5'
           - 'v1.12.16'
           - 'v1.13.6'
     name: k3s ${{ matrix.k3s }}, cert-manager-chart ${{ matrix.cert-manager-chart }}
