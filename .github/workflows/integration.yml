@@ -9,7 +9,7 @@ jobs:
       matrix:
         k3s:
           - 'v1.30.10-k3s1'
-          #- 'v1.31.6-k3s1'
+          - 'v1.31.6-k3s1'
           #- 'v1.32.2-k3s1'
         cert-manager-chart:
           - 'v1.17.1'
