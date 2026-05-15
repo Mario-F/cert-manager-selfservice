@@ -72,19 +72,34 @@ func GetCertificates() ([]KubeCertificate, error) {
 
 	promCertGauge.Set(float64(len(kubeResult.Items)))
 	log.Debugf("Found %d certificates for manager-id %s", len(kubeResult.Items), managerId)
+
+	secretList, err := client.K8s.CoreV1().Secrets(client.Namespace).List(context.TODO(), metav1.ListOptions{})
+
+	if err != nil {
+		log.Errorf("Failed building secrets list in %s", client.Namespace)
+		return result, err
+	}
+
+	secretMap := map[string]corev1.Secret{}
+	for _, s := range secretList.Items {
+		secretMap[s.Name] = s
+	}
+
 	for _, c := range kubeResult.Items {
 		actCert := KubeCertificate{Ready: true}
 
 		actCert.Domains = append(actCert.Domains, c.Spec.DNSNames...)
 
 		// now get tls secret
-		secret, err := client.K8s.CoreV1().Secrets(client.Namespace).Get(context.TODO(), c.Spec.SecretName, metav1.GetOptions{})
-		if err != nil {
+		secret, ok := secretMap[c.Spec.SecretName]
+
+		if !ok {
 			log.Errorf("TLS Secret for domain %s not ready yet: %s", c.Name, c.Spec.SecretName)
 			actCert.Ready = false
 		}
+
 		actCert.Certificate = c
-		actCert.Secret = *secret
+		actCert.Secret = secret
 
 		actCert.LastAccess = parseTime(c.Name, c.ObjectMeta.Labels["cert-manager-selfservice/last-access"])
 		promCertLastAccessGauge.WithLabelValues(actCert.Domains[0]).Set(float64(actCert.LastAccess))
