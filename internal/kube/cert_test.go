@@ -7,6 +7,24 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func TestDomainToSlug(t *testing.T) {
+	tests := []struct {
+		domain   string
+		expected string
+	}{
+		{"example.com", "example-com"},
+		{"sub.example.com", "sub-example-com"},
+		{"*.example.com", "wildcard-example-com"},
+		{"*.sub.example.com", "wildcard-sub-example-com"},
+	}
+	for _, tt := range tests {
+		result := domainToSlug(tt.domain)
+		if result != tt.expected {
+			t.Errorf("domainToSlug(%q) = %q, want %q", tt.domain, result, tt.expected)
+		}
+	}
+}
+
 func TestKubeCertHandling(t *testing.T) {
 	log.SetLevel(log.DebugLevel)
 	fDomain := "testcert.1234.com"

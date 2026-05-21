@@ -187,9 +187,14 @@ func parseTime(domain string, stringTime string) int64 {
 	return iTimestamp
 }
 
+func domainToSlug(domain string) string {
+	slug := strings.ReplaceAll(domain, "*.", "wildcard-")
+	return strings.ReplaceAll(slug, ".", "-")
+}
+
 func CreateCertificate(domain string, issuer cmmeta.ObjectReference) error {
 	log.Infof("Create certificate for domain %s", domain)
-	domainSlug := strings.ReplaceAll(domain, ".", "-")
+	domainSlug := domainToSlug(domain)
 
 	client, err := getClient()
 	if err != nil {
